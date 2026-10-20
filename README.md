@@ -4,6 +4,9 @@ Aplicação web interativa e **100% acessível para leitores de tela (NVDA)** qu
 
 Projetado especialmente para permitir a exploração completa da árvore de telas, edição de parâmetros por contagem exata de setas e consulta rápida a todas as tabelas oficiais do módulo sem depender de referências visuais.
 
+🌐 **Acesse online:** [https://roland-v31-simulador-manual.netlify.app](https://roland-v31-simulador-manual.netlify.app)
+📖 **Manual + Data List direto:** [https://roland-v31-simulador-manual.netlify.app/manual.html](https://roland-v31-simulador-manual.netlify.app/manual.html)
+
 ---
 
 ## ✨ Principais Recursos
