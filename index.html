@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Roland V31 (TD-316) — Painel Operacional e Manual Acessível</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a href="#v31-simulator-app" class="skip-link">Pular para o Painel do Módulo V31</a>
+  <a href="#current-screen-doc" class="skip-link">Pular para a Descrição Completa da Tela Atual</a>
+
+  <!-- Regiões Live Duplas para garantir leitura imediata de cada tecla no NVDA -->
+  <div id="nvda-live-a" class="sr-only" aria-live="assertive" aria-atomic="true"></div>
+  <div id="nvda-live-b" class="sr-only" aria-live="assertive" aria-atomic="true"></div>
+
+  <header class="site-header" role="banner">
+    <div class="header-inner">
+      <div>
+        <h1 class="brand-title">Roland V31 (V-Drums TD-316) — Operação e Navegação</h1>
+        <p class="brand-subtitle">Navegação completa por setas, Disco, F1–F6 e Manual de Referência + Data List Integrado em Português</p>
+      </div>
+      <nav class="top-nav" aria-label="Navegação Principal">
+        <a href="manual.html" class="nav-link-btn btn-primary">Manual de Referência + Data List Completo</a>
+        <button type="button" id="btn-toggle-capture" class="btn btn-amber">Atalhos do Módulo: ATIVOS (Clique para pausar)</button>
+        <button type="button" id="btn-reset-memory" class="btn btn-danger">Restaurar Memória de Fábrica</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-container" role="main">
+    <!-- Barra de Status do Módulo -->
+    <section class="status-bar" aria-label="Status Atual do Módulo">
+      <div class="status-pills">
+        <span id="status-kit" class="status-pill"><strong>KIT:</strong> 001 Studio A</span>
+        <span id="status-pad" class="status-pill"><strong>PAD:</strong> SNARE [HEAD]</span>
+        <span id="status-click" class="status-pill"><strong>CLICK:</strong> OFF (120 BPM)</span>
+        <span id="status-flags" class="status-pill"><strong>MODO:</strong> NORMAL</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <label for="quick-screen-select" style="font-size:0.88rem; font-weight:700;">Ir direto para a tela:</label>
+        <select id="quick-screen-select" class="search-box" style="width:auto; min-width:260px; padding:6px 10px;"></select>
+      </div>
+    </section>
+
+    <!-- Painel Interativo do Módulo Roland V31 -->
+    <section
+      id="v31-simulator-app"
+      class="v31-chassis"
+      role="application"
+      tabindex="0"
+      aria-label="Painel do Módulo Roland V31. Use as setas para navegar pelas opções, números de 1 a 6 para F1 a F6, Mais e Menos para girar o Disco, Enter para abrir e Escape para sair."
+    >
+      <div class="chassis-top-row">
+        <span class="chassis-badge">ROLAND V31 DRUM SOUND MODULE</span>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button type="button" id="btn-hw-whereami" class="btn">Onde Estou? <kbd>(Tecla I)</kbd></button>
+          <button type="button" id="btn-hw-readf" class="btn">Ler Botões F1–F6 <kbd>(Tecla F)</kbd></button>
+          <button type="button" id="btn-hw-strike" class="btn btn-primary">Percutir Pad Atual <kbd>(Tecla B)</kbd></button>
+        </div>
+      </div>
+
+      <!-- Última Leitura Enviada ao Leitor de Telas -->
+      <div class="live-announcement-banner" aria-hidden="true">
+        <strong>Leitura Atual:</strong> <span id="last-announcement-text">Módulo iniciado na tela KIT (001 Studio A).</span>
+      </div>
+
+      <div class="module-workarea">
+        <!-- Visor LCD Colorido do V31 -->
+        <div class="v31-lcd-frame" role="region" aria-label="Visor LCD do Módulo V31">
+          <div class="lcd-topbar">
+            <span id="lcd-screen-title" class="lcd-screen-title">DRUM KIT (Tela Principal KIT)</span>
+            <span id="lcd-pad-indicator" class="lcd-pad-indicator">SNARE (HEAD) | KIT 001</span>
+          </div>
+
+          <div id="lcd-body" class="lcd-body">
+            <!-- Renderizado dinamicamente por simulator.js -->
+          </div>
+
+          <div id="lcd-fbar" class="lcd-fbar" role="group" aria-label="Botões de Função F1 a F6 do Visor">
+            <!-- Botões F1 a F6 renderizados dinamicamente -->
+          </div>
+        </div>
+
+        <!-- Controles Físicos do Painel Direito do V31 -->
+        <div class="hardware-controls-panel" role="region" aria-label="Botões Físicos do Módulo V31">
+          <div>
+            <h2 class="hw-group-title">Botões de Modo e Edição</h2>
+            <div class="hw-btn-grid">
+              <button type="button" id="btn-hw-kit" class="hw-btn">[KIT]<kbd>Tecla K</kbd></button>
+              <button type="button" id="btn-hw-menu" class="hw-btn">[MENU]<kbd>Tecla M</kbd></button>
+              <button type="button" id="btn-hw-ezedit" class="hw-btn">[EZ EDIT]<kbd>Tecla E / Z</kbd></button>
+              <button type="button" id="btn-hw-expansion" class="hw-btn">[EXPANSION]<kbd>Tecla X</kbd></button>
+              <button type="button" id="btn-hw-click" class="hw-btn">[CLICK]<kbd>Tecla C</kbd></button>
+              <button type="button" id="btn-hw-coach" class="hw-btn">[COACH]<kbd>Tecla O</kbd></button>
+              <button type="button" id="btn-hw-song" class="hw-btn">[SONG]<kbd>Tecla S</kbd></button>
+              <button type="button" id="btn-hw-rec" class="hw-btn">[● REC]<kbd>Tecla R</kbd></button>
+              <button type="button" id="btn-hw-play" class="hw-btn">[►/■ PLAY]<kbd>Espaço / P</kbd></button>
+            </div>
+          </div>
+
+          <div class="dpad-and-dial">
+            <div>
+              <h2 class="hw-group-title">Setas de Cursor</h2>
+              <div class="dpad-grid">
+                <div></div>
+                <button type="button" id="btn-hw-up" class="hw-btn" aria-label="Seta para Cima">[▲]<kbd>Cima</kbd></button>
+                <div></div>
+                <button type="button" id="btn-hw-left" class="hw-btn" aria-label="Seta para Esquerda">[◄]<kbd>Esq</kbd></button>
+                <button type="button" id="btn-hw-down" class="hw-btn" aria-label="Seta para Baixo">[▼]<kbd>Baixo</kbd></button>
+                <button type="button" id="btn-hw-right" class="hw-btn" aria-label="Seta para Direita">[►]<kbd>Dir</kbd></button>
+              </div>
+            </div>
+
+            <div class="dial-box">
+              <h2 class="hw-group-title">Disco &amp; Confirmação</h2>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+                <button type="button" id="btn-hw-dial-dec" class="hw-btn">Disco [-]<kbd>- ou [</kbd></button>
+                <button type="button" id="btn-hw-dial-inc" class="hw-btn">Disco [+]<kbd>+ ou ]</kbd></button>
+                <button type="button" id="btn-hw-exit" class="hw-btn">[EXIT]<kbd>Esc / Backspace</kbd></button>
+                <button type="button" id="btn-hw-enter" class="hw-btn">[ENTER]<kbd>Enter</kbd></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Barra de Seleção Rápida de Pads e Zonas -->
+    <section class="pad-bar" aria-label="Seleção de Pad e Zona">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+        <strong>Seleção de Pad / Acionador (Atalho: <code>Ctrl + Seta Esquerda/Direita</code> para trocar Pad; <code>Ctrl + Seta Cima/Baixo</code> para trocar Zona Head/Rim/Bell):</strong>
+      </div>
+      <div id="pad-selector-row" class="pad-buttons-row"></div>
+    </section>
+
+    <!-- Seção Obrigatória: Descrição Completa da Tela Atual, Mapa de Setas e Link para o Manual -->
+    <section id="current-screen-doc" class="doc-card" aria-label="Descrição Completa da Tela Atual e Mapa de Setas">
+      <!-- Preenchido dinamicamente por simulator.js a cada mudança de tela ou valor -->
+    </section>
+
+    <!-- Referência Rápida de Todos os Atalhos de Teclado -->
+    <section class="doc-card" aria-label="Tabela de Atalhos de Teclado do Módulo V31">
+      <h2>Mapa Completo de Atalhos de Teclado</h2>
+      <p>
+        Nota para usuários do leitor de telas <strong>NVDA</strong>: Ao focar no Painel do Módulo V31 acima, o NVDA entra automaticamente em Modo de Foco (Focus Mode) para enviar as setas diretamente ao módulo. Caso queira usar o modo de navegação do NVDA com os atalhos ligados, pressione <code>NVDA + Barra de Espaço</code>.
+      </p>
+      <div class="table-responsive">
+        <table class="v31-table">
+          <caption>Atalhos de Teclado para Todos os Controles do Roland V31</caption>
+          <thead>
+            <tr>
+              <th scope="col">Tecla no Computador</th>
+              <th scope="col">Controle Físico no Módulo V31</th>
+              <th scope="col">Função Executada</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>Seta Cima / Baixo / Esquerda / Direita</code></td>
+              <td>Botões de Cursor <code>[▲] [▼] [◄] [►]</code></td>
+              <td>Move o cursor pela tela atual (ou troca de categoria/ícone no MENU) e anuncia a opção focada, o valor e a coordenada exata.</td>
+            </tr>
+            <tr>
+              <td><code>+</code>, <code>=</code>, <code>]</code> ou <code>PageUp</code></td>
+              <td>Girar o <code>[Disco]</code> para a direita (horário)</td>
+              <td>Aumenta o valor do parâmetro focado ou avança para a próxima opção. Segure <code>Shift</code> para avançar em passos maiores (10 em 10).</td>
+            </tr>
+            <tr>
+              <td><code>-</code>, <code>[</code> ou <code>PageDown</code></td>
+              <td>Girar o <code>[Disco]</code> para a esquerda (anti-horário)</td>
+              <td>Diminui o valor do parâmetro focado ou volta para a opção anterior. Segure <code>Shift</code> para passos maiores.</td>
+            </tr>
+            <tr>
+              <td><code>1</code>, <code>2</code>, <code>3</code>, <code>4</code>, <code>5</code>, <code>6</code> (ou <code>F1</code> a <code>F6</code>)</td>
+              <td>Botões de Função <code>[F1]</code> a <code>[F6]</code></td>
+              <td>Aciona a função correspondente exibida na base da tela atual e anuncia imediatamente o que ocorreu. Use <code>Shift + 1..6</code> para <code>[SHIFT] + [F1]–[F6]</code>.</td>
+            </tr>
+            <tr>
+              <td><code>Enter</code></td>
+              <td>Botão <code>[ENTER]</code></td>
+              <td>Abre o ícone ou menu selecionado, confirma uma operação ou entra na grade de ícones do MENU.</td>
+            </tr>
+            <tr>
+              <td><code>Escape</code> ou <code>Backspace</code></td>
+              <td>Botão <code>[EXIT]</code> (e <code>[SHIFT] + [EXIT]</code>)</td>
+              <td>Retorna à tela anterior na hierarquia. Com <code>Shift + Escape</code>, executa <strong>ALL SOUND OFF</strong>.</td>
+            </tr>
+            <tr>
+              <td><code>M</code> (e <code>Shift + M</code>)</td>
+              <td>Botão <code>[MENU]</code> (e <code>[SHIFT] + [MENU]</code>)</td>
+              <td>Abre a tela principal <strong>MENU</strong>. Com <code>Shift + M</code>, liga/desliga o <strong>Trigger Lock</strong> (trava a seleção de pad).</td>
+            </tr>
+            <tr>
+              <td><code>K</code> (e <code>Shift + K</code>)</td>
+              <td>Botão <code>[KIT]</code> (e <code>[SHIFT] + [KIT]</code>)</td>
+              <td>Vai para a tela inicial <strong>KIT</strong>. Com <code>Shift + K</code>, liga/desliga o <strong>Safety Mode</strong> (bloqueio de segurança de palco).</td>
+            </tr>
+            <tr>
+              <td><code>E</code> ou <code>Z</code></td>
+              <td>Botão <code>[EZ EDIT]</code></td>
+              <td>Abre a tela <strong>EZ EDIT</strong> (edição rápida de Instrumento, Tuning, Muffling e Ambience).</td>
+            </tr>
+            <tr>
+              <td><code>X</code> (e <code>Shift + X</code>)</td>
+              <td>Botão <code>[EXPANSION]</code> (e <code>[SHIFT] + [EXPANSION]</code>)</td>
+              <td>Abre a tela <strong>EXPANSION SLOT / RACK</strong>. Com <code>Shift + X</code>, abre diretamente a lista <strong>USER SAMPLE</strong>.</td>
+            </tr>
+            <tr>
+              <td><code>C</code> (e <code>Shift + C</code>)</td>
+              <td>Botão <code>[CLICK]</code> (e <code>[SHIFT] + [CLICK]</code>)</td>
+              <td>Abre a tela do metrônomo <strong>CLICK</strong>. Com <code>Shift + C</code>, liga/desliga o som do metrônomo de qualquer tela.</td>
+            </tr>
+            <tr>
+              <td><code>O</code></td>
+              <td>Botão <code>[COACH]</code></td>
+              <td>Abre o modo de treino <strong>COACH</strong> (Time Check, Quiet Count, Auto Up/Down, Change-Up).</td>
+            </tr>
+            <tr>
+              <td><code>S</code></td>
+              <td>Botão <code>[SONG]</code></td>
+              <td>Abre o reprodutor de músicas <strong>SONG</strong> (Internas, Cartão SD, Gravações MIDI e Áudio).</td>
+            </tr>
+            <tr>
+              <td><code>R</code></td>
+              <td>Botão <code>[●] (REC)</code></td>
+              <td>Abre a tela de espera de gravação <strong>REC STANDBY</strong> (DRUM REC e AUDIO REC).</td>
+            </tr>
+            <tr>
+              <td><code>Barra de Espaço</code> ou <code>P</code></td>
+              <td>Botão <code>[►/■] (PLAY/STOP)</code></td>
+              <td>Inicia ou para a reprodução da música ou gravação.</td>
+            </tr>
+            <tr>
+              <td><code>Ctrl + Seta Esquerda / Direita</code></td>
+              <td><code>[ENTER] + [◄] / [►]</code> no módulo</td>
+              <td>Seleciona o Pad anterior ou seguinte (KICK, SNARE, TOM1..AUX4).</td>
+            </tr>
+            <tr>
+              <td><code>Ctrl + Seta Cima / Baixo</code></td>
+              <td><code>[ENTER] + [▲] / [▼]</code> no módulo</td>
+              <td>Alterna a Zona do Pad atual (HEAD, RIM, BELL, XSTICK, BRUSH).</td>
+            </tr>
+            <tr>
+              <td><code>B</code></td>
+              <td>Percutir o Pad Físico</td>
+              <td>Dispara o pad atual (exibe Velocity e sincroniza configurações pendentes <code>*</code> com pads sem fio DrumLink / WT-10 / DWe).</td>
+            </tr>
+            <tr>
+              <td><code>I</code> ou <code>?</code></td>
+              <td>Leitura de Posição Completa</td>
+              <td>Lê novamente o título da tela, o item focado, o valor atual, as coordenadas de linha/coluna, o Kit e o Pad selecionados.</td>
+            </tr>
+            <tr>
+              <td><code>F</code></td>
+              <td>Leitura da Barra F1–F6</td>
+              <td>Lê em sequência o significado dos botões <code>[F1]</code> a <code>[F6]</code> na tela atual.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- Dados Completos do Manual de Referência + Data List -->
+  <script src="data/kits_and_lists.js"></script>
+  <script src="data/instruments.js"></script>
+  <script src="data/effects.js"></script>
+  <script src="data/manual_sections.js"></script>
+  <script src="data/screens_and_menus.js"></script>
+  <!-- Motor Operacional do Módulo V31 -->
+  <script src="simulator.js"></script>
+</body>
+</html>

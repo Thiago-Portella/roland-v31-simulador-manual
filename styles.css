@@ -1,0 +1,776 @@
+/* ============================================================================
+   ROLAND V31 / TD-316 — SIMULADOR DE MÓDULO & MANUAL DE REFERÊNCIA INTEGRADO
+   Estilos de Alto Contraste e Acessibilidade para Leitores de Tela (NVDA)
+   ============================================================================ */
+
+:root {
+  --bg-page: #0a0e17;
+  --bg-panel: #111827;
+  --bg-lcd: #050911;
+  --bg-lcd-header: #0f172a;
+  --bg-lcd-cell: #131c2e;
+  --bg-lcd-active: #1e3a8a;
+  --bg-fbtn: #1f2937;
+  --bg-fbtn-active: #0284c7;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --accent-cyan: #38bdf8;
+  --accent-amber: #fbbf24;
+  --accent-green: #4ade80;
+  --accent-red: #f87171;
+  --border-color: #334155;
+  --focus-ring: #facc15;
+  --font-sans: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+  --font-mono: "Cascadia Mono", "Consolas", "Courier New", monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  line-height: 1.55;
+  font-size: 16px;
+}
+
+/* Utilitários para Leitores de Tela */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 12px;
+  background: var(--focus-ring);
+  color: #000;
+  font-weight: 700;
+  padding: 10px 16px;
+  border-radius: 6px;
+  z-index: 9999;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  top: 12px;
+}
+
+a {
+  color: var(--accent-cyan);
+  text-decoration: underline;
+}
+
+a:hover, a:focus {
+  color: var(--focus-ring);
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus-ring) !important;
+  outline-offset: 2px !important;
+}
+
+/* Cabeçalho Principal */
+.site-header {
+  background: linear-gradient(180deg, #172033 0%, #0f172a 100%);
+  border-bottom: 2px solid var(--border-color);
+  padding: 14px 24px;
+}
+
+.header-inner {
+  max-width: 1380px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.brand-title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: var(--text-primary);
+}
+
+.brand-subtitle {
+  margin: 2px 0 0 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.top-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.btn, .nav-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #1e293b;
+  color: var(--text-primary);
+  border: 1px solid #475569;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.btn:hover, .nav-link-btn:hover {
+  background: #334155;
+  border-color: var(--accent-cyan);
+  color: #fff;
+}
+
+.btn-primary {
+  background: #0369a1;
+  border-color: #38bdf8;
+}
+
+.btn-primary:hover {
+  background: #0284c7;
+}
+
+.btn-amber {
+  background: #78350f;
+  border-color: var(--accent-amber);
+  color: #fef3c7;
+}
+
+.btn-danger {
+  background: #7f1d1d;
+  border-color: var(--accent-red);
+  color: #fee2e2;
+}
+
+/* Container Principal */
+.main-container {
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 20px 24px 60px;
+}
+
+/* Barra de Status Rápido e Pad Atual */
+.status-bar {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.status-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.status-pill {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 0.88rem;
+  font-family: var(--font-mono);
+}
+
+.status-pill strong {
+  color: var(--accent-amber);
+}
+
+.status-pill.active-flag {
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+}
+
+/* Painel do Módulo Físico Roland V31 */
+.v31-chassis {
+  background: linear-gradient(145deg, #1b2230 0%, #0f141d 100%);
+  border: 2px solid #475569;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.65);
+  margin-bottom: 24px;
+}
+
+.v31-chassis:focus {
+  border-color: var(--focus-ring);
+  box-shadow: 0 0 0 4px rgba(250, 204, 21, 0.35);
+}
+
+.chassis-top-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #334155;
+}
+
+.chassis-badge {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--accent-cyan);
+}
+
+.live-announcement-banner {
+  background: #091326;
+  border: 2px solid var(--accent-amber);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  color: #fef08a;
+}
+
+.live-announcement-banner strong {
+  color: var(--accent-cyan);
+}
+
+/* Grade de Visor LCD + Controles Físicos */
+.module-workarea {
+  display: grid;
+  grid-template-columns: 1.55fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .module-workarea {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Visor LCD Colorido do V31 */
+.v31-lcd-frame {
+  background: #020617;
+  border: 3px solid #334155;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 410px;
+}
+
+.lcd-topbar {
+  background: var(--bg-lcd-header);
+  border-bottom: 2px solid #1e293b;
+  padding: 8px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+}
+
+.lcd-screen-title {
+  font-weight: 800;
+  color: var(--accent-amber);
+  font-size: 1.05rem;
+}
+
+.lcd-pad-indicator {
+  background: #1e3a8a;
+  color: #fff;
+  padding: 3px 9px;
+  border-radius: 4px;
+  font-weight: 700;
+}
+
+.lcd-body {
+  flex: 1;
+  padding: 14px;
+  background: var(--bg-lcd);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Layout Especial: Tela MENU (Coluna Esquerda 5 Categorias + Grade Direita 4x3) */
+.menu-split-layout {
+  display: grid;
+  grid-template-columns: 210px 1fr;
+  gap: 14px;
+  flex: 1;
+}
+
+@media (max-width: 680px) {
+  .menu-split-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.menu-cat-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-right: 2px solid #1e293b;
+  padding-right: 10px;
+}
+
+.menu-cat-item {
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: #0f172a;
+  border: 2px solid transparent;
+  font-weight: 700;
+  font-size: 0.92rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.menu-cat-item.selected-cat {
+  background: #172554;
+  border-color: #3b82f6;
+  color: #fff;
+}
+
+.menu-cat-item.focused-cursor {
+  background: #1e3a8a;
+  border-color: var(--focus-ring);
+  box-shadow: 0 0 0 2px rgba(250, 204, 21, 0.5);
+}
+
+.menu-icon-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  align-content: start;
+}
+
+@media (max-width: 680px) {
+  .menu-icon-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.menu-icon-cell {
+  background: var(--bg-lcd-cell);
+  border: 2px solid #1e293b;
+  border-radius: 8px;
+  padding: 10px 8px;
+  text-align: center;
+  cursor: pointer;
+  min-height: 78px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+}
+
+.menu-icon-cell.focused-cursor {
+  background: var(--bg-lcd-active);
+  border-color: var(--focus-ring);
+  box-shadow: 0 0 0 2px rgba(250, 204, 21, 0.6);
+}
+
+.menu-icon-coord {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.menu-icon-label {
+  font-weight: 800;
+  font-size: 0.92rem;
+  color: var(--text-primary);
+}
+
+/* Grade de Parâmetros ou Lista do LCD */
+.lcd-items-grid {
+  display: grid;
+  gap: 8px;
+}
+
+.lcd-item-card {
+  background: var(--bg-lcd-cell);
+  border: 2px solid #1e293b;
+  border-radius: 6px;
+  padding: 9px 12px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.lcd-item-card.focused-cursor {
+  background: var(--bg-lcd-active);
+  border-color: var(--focus-ring);
+  box-shadow: 0 0 0 2px rgba(250, 204, 21, 0.55);
+}
+
+.lcd-item-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.lcd-item-label {
+  font-size: 0.86rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.lcd-item-coord {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.lcd-item-value {
+  font-family: var(--font-mono);
+  font-size: 1.08rem;
+  font-weight: 800;
+  color: var(--accent-amber);
+}
+
+.lcd-item-card.focused-cursor .lcd-item-value {
+  color: #fff;
+}
+
+/* Barra Rodapé F1–F6 do Visor LCD */
+.lcd-fbar {
+  background: #0b1120;
+  border-top: 2px solid #334155;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 4px;
+  padding: 6px;
+}
+
+.fbar-btn {
+  background: var(--bg-fbtn);
+  color: var(--text-primary);
+  border: 1px solid #475569;
+  border-radius: 4px;
+  padding: 7px 4px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.fbar-btn:hover {
+  background: #334155;
+  border-color: var(--accent-cyan);
+}
+
+.fbar-btn .f-num {
+  font-size: 0.7rem;
+  color: var(--accent-cyan);
+}
+
+.fbar-btn .f-lbl {
+  color: #fff;
+  word-break: break-word;
+}
+
+.fbar-btn.f-disabled {
+  opacity: 0.48;
+}
+
+/* Painel Direito: Controles Físicos do Módulo */
+.hardware-controls-panel {
+  background: #111827;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.hw-group-title {
+  margin: 0 0 8px 0;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent-cyan);
+  border-bottom: 1px solid #1e293b;
+  padding-bottom: 4px;
+}
+
+.hw-btn-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.hw-btn {
+  background: #1e293b;
+  color: var(--text-primary);
+  border: 1px solid #475569;
+  border-radius: 6px;
+  padding: 8px 6px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+}
+
+.hw-btn:hover {
+  background: #334155;
+  border-color: var(--accent-amber);
+}
+
+.hw-btn kbd {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--accent-amber);
+  margin-top: 2px;
+}
+
+.dpad-and-dial {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.dpad-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  max-width: 180px;
+  margin: 0 auto;
+}
+
+.dial-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Seletores de Pad e Zona Rápidos */
+.pad-bar {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 24px;
+}
+
+.pad-buttons-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.pad-chip {
+  background: #1e293b;
+  color: var(--text-secondary);
+  border: 1px solid #475569;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.pad-chip.active-pad {
+  background: #1e3a8a;
+  color: #fff;
+  border-color: var(--focus-ring);
+}
+
+/* Seções de Documentação e Descrição Completa da Tela Atual */
+.doc-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+}
+
+.doc-card h2 {
+  margin-top: 0;
+  color: var(--accent-amber);
+  font-size: 1.35rem;
+  border-bottom: 2px solid #1e293b;
+  padding-bottom: 8px;
+}
+
+.doc-card h3 {
+  color: var(--accent-cyan);
+  font-size: 1.12rem;
+  margin-top: 20px;
+  margin-bottom: 8px;
+}
+
+.doc-card h4 {
+  color: #e2e8f0;
+  font-size: 1rem;
+  margin-top: 16px;
+  margin-bottom: 6px;
+}
+
+/* Tabelas Acessíveis */
+.table-responsive {
+  overflow-x: auto;
+  margin: 12px 0 20px;
+}
+
+table.v31-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #0b1120;
+  font-size: 0.93rem;
+}
+
+table.v31-table caption {
+  text-align: left;
+  font-weight: 700;
+  color: var(--accent-amber);
+  padding: 8px 4px;
+  font-size: 1rem;
+}
+
+table.v31-table th,
+table.v31-table td {
+  border: 1px solid #334155;
+  padding: 9px 12px;
+  text-align: left;
+  vertical-align: top;
+}
+
+table.v31-table th {
+  background: #1e293b;
+  color: #f8fafc;
+  font-weight: 700;
+}
+
+table.v31-table tr:nth-child(even) td {
+  background: #0f172a;
+}
+
+table.v31-table tr.active-row td {
+  background: #1e3a8a;
+  color: #fff;
+}
+
+/* Layout do Manual de Referência + Data List (manual.html) */
+.manual-layout {
+  display: grid;
+  grid-template-columns: 310px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 980px) {
+  .manual-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.manual-sidebar {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 16px;
+  position: sticky;
+  top: 16px;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+}
+
+.manual-toc-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.manual-toc-list a {
+  display: block;
+  padding: 6px 10px;
+  border-radius: 6px;
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.manual-toc-list a:hover,
+.manual-toc-list a:focus {
+  background: #1e293b;
+  color: var(--focus-ring);
+}
+
+.search-box {
+  width: 100%;
+  background: #090d16;
+  color: #fff;
+  border: 2px solid #475569;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 0.95rem;
+}
+
+.search-box:focus {
+  border-color: var(--focus-ring);
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  background: #1e293b;
+  color: var(--accent-cyan);
+}
+
+.tip-box {
+  background: #172554;
+  border-left: 4px solid var(--accent-cyan);
+  padding: 12px 16px;
+  border-radius: 0 6px 6px 0;
+  margin: 12px 0;
+}

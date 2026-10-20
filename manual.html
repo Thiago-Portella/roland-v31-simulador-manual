@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Roland V31 (TD-316) — Manual de Referência + Data List Integrado em Português</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a href="#manual-main-content" class="skip-link">Pular para o Conteúdo Principal do Manual</a>
+  <a href="index.html" class="skip-link">Voltar para o Painel Operacional do Módulo V31</a>
+
+  <header class="site-header" role="banner">
+    <div class="header-inner">
+      <div>
+        <h1 class="brand-title">Roland V31 (TD-316) — Manual de Referência + Data List Unificado</h1>
+        <p class="brand-subtitle">100% das telas mapeadas por contagem de setas + Todas as listas de Kits, Instrumentos, Efeitos BUS FX e Acionadores em Português</p>
+      </div>
+      <nav class="top-nav" aria-label="Navegação Superior">
+        <a href="index.html" class="nav-link-btn btn-primary">Ir para o Painel Interativo do Módulo V31</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="main-container">
+    <div class="manual-layout">
+      <!-- Índice Lateral (Sumário Completo) -->
+      <aside class="manual-sidebar" aria-label="Sumário de Capítulos e Tabelas do Data List">
+        <label for="manual-global-search" style="display:block; font-weight:700; margin-bottom:6px;">Filtrar Capítulos / Parâmetros:</label>
+        <input
+          type="search"
+          id="manual-global-search"
+          class="search-box"
+          placeholder="Ex: XTalk, Strainer, USB Audio, VH-10..."
+          style="margin-bottom:14px;"
+        />
+        <h2 style="font-size:1.05rem; color:var(--accent-amber); margin:0 0 8px 0;">Sumário Completo (27 Seções)</h2>
+        <ul id="manual-toc" class="manual-toc-list"></ul>
+      </aside>
+
+      <!-- Conteúdo Principal do Manual + Data List -->
+      <main id="manual-main-content" role="main">
+        <!-- Seções 1 a 21 (Manual de Referência + Parâmetros do Data List Combinados) -->
+        <div id="manual-sections-container"></div>
+
+        <!-- Seção 22: Data List - 200 Drum Kits -->
+        <article id="datalist-kits" class="doc-card">
+          <span class="badge">DATA LIST INTEGRADO</span>
+          <h2>22. Lista Completa dos 200 Drum Kits (Preset 001–070 e User 071–200)</h2>
+          <p>
+            Abaixo estão listados todos os 200 Drum Kits do módulo Roland V31 (páginas 108 e 109 do Data List), incluindo o nome principal (Linha 1) e o subnome descritivo (Linha 2).
+          </p>
+          <p><a class="nav-link-btn btn-primary" href="index.html?screen=KIT">Abrir a Tela KIT no Painel do Módulo</a></p>
+          <div id="datalist-kits-body"></div>
+        </article>
+
+        <!-- Seção 23: Data List - 1.010 Instrumentos -->
+        <article id="datalist-instruments" class="doc-card">
+          <span class="badge">DATA LIST INTEGRADO</span>
+          <h2>23. Lista Completa dos 1.010 Instrumentos (Preset + EXV001 + EXV002 + EXV003)</h2>
+          <p>
+            Reúne 100% dos instrumentos das páginas 110 a 118 do Data List: os 246 itens do banco interno <strong>PRESET</strong> (<code>0: OFF</code> a <code>245: For Pad Check</code>), os 30 instrumentos da expansão <strong>EXV001 (Wood Room Studio UK 1)</strong>, os 712 instrumentos da expansão <strong>EXV002 (Electronic&amp;Percussion 1)</strong> e os 22 instrumentos da expansão <strong>EXV003 (The Brush 1)</strong>.
+          </p>
+          <div class="tip-box">
+            <strong>Legenda das Marcas de Recursos dos Instrumentos:</strong>
+            <ul>
+              <li><code>*M</code> (Multi-sensor): Suporta detecção posicional na pele/corpo, detecção posicional no aro ou abafamento por toque nos pratos digitais.</li>
+              <li><code>*P</code> (Positional Sensing): Suporta mudança contínua de timbre conforme o ponto de impacto (do centro para a borda).</li>
+              <li><code>*X</code> (Cross-Stick): Suporta técnica de Cross-Stick automática ao apoiar a mão na pele ou conforme a força no aro.</li>
+              <li><code>*O</code> (One-Shot): Toca o som do início ao fim a cada batida, ideal para loops e frases percussivas.</li>
+              <li><code>*B</code> (Brush): Suporta técnica de vassourinha (Brush Sweep).</li>
+              <li><code>*L</code> (Strainer Lever): Suporta ligar/desligar a esteira da caixa usando a alavanca do automático no pad digital PD-14DSX ou botão/knob.</li>
+            </ul>
+          </div>
+          <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:14px;">
+            <div style="flex:1; min-width:240px;">
+              <label for="inst-bank-filter" style="display:block; font-weight:700; margin-bottom:4px;">Selecionar Banco de Instrumentos:</label>
+              <select id="inst-bank-filter" class="search-box">
+                <option value="PRESET">PRESET — 246 Instrumentos Internos (0 a 245)</option>
+                <option value="EXV001">EXV001: Wood Room Studio UK 1 (30 Instrumentos)</option>
+                <option value="EXV002">EXV002: Electronic&amp;Percussion 1 (712 Instrumentos)</option>
+                <option value="EXV003">EXV003: The Brush 1 (22 Instrumentos)</option>
+                <option value="ALL">Mostrar Todos os 1.010 Instrumentos Juntos</option>
+              </select>
+            </div>
+            <div style="flex:1; min-width:240px;">
+              <label for="inst-search-input" style="display:block; font-weight:700; margin-bottom:4px;">Pesquisar Instrumento por Nome, Número ou Grupo:</label>
+              <input type="search" id="inst-search-input" class="search-box" placeholder="Ex: Maple, Beech, 808, Cowbell, Ride..." />
+            </div>
+          </div>
+          <p><a class="nav-link-btn btn-primary" href="index.html?screen=INST_LIST_WINDOW">Abrir a Janela INST LIST no Painel do Módulo</a></p>
+          <div id="datalist-instruments-body"></div>
+        </article>
+
+        <!-- Seção 24: Data List - 94 Efeitos Multi-Effects (BUS FX) -->
+        <article id="datalist-effects" class="doc-card">
+          <span class="badge">DATA LIST INTEGRADO</span>
+          <h2>24. Lista Completa dos 94 Efeitos Multi-Effects (BUS FX) e Todos os 1.110 Parâmetros</h2>
+          <p>
+            Contém todos os 94 algoritmos de efeitos das páginas 67 a 107 do Data List (de <code>EQUALIZER</code> até <code>JD-MULTI</code>), traduzidos e explicados em português, incluindo a descrição textual do diagrama de fluxo de sinal de cada efeito, indicação de suporte a Side Chain (<code>*1</code>) e todas as tabelas internas (como tipos de amplificador <code>ATyp</code>, caixas acústicas <code>STyp</code> e sequências do <code>JD-MULTI</code>).
+          </p>
+          <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:14px;">
+            <div style="flex:1; min-width:240px;">
+              <label for="fx-cat-filter" style="display:block; font-weight:700; margin-bottom:4px;">Filtrar por Categoria de Efeito:</label>
+              <select id="fx-cat-filter" class="search-box">
+                <option value="ALL">Todas as 13 Categorias (95 entradas com THRU)</option>
+              </select>
+            </div>
+            <div style="flex:1; min-width:240px;">
+              <label for="fx-search-input" style="display:block; font-weight:700; margin-bottom:4px;">Pesquisar Efeito ou Parâmetro:</label>
+              <input type="search" id="fx-search-input" class="search-box" placeholder="Ex: Compressor, Tape Echo, JD-Multi, Slicer, Wah..." />
+            </div>
+          </div>
+          <p><a class="nav-link-btn btn-primary" href="index.html?screen=BUS_FX_EDIT">Abrir a Tela BUS FX EDIT no Painel do Módulo</a></p>
+          <div id="datalist-effects-body"></div>
+        </article>
+
+        <!-- Seção 25: Data List - 72 Modelos de Pad (Trig Types) -->
+        <article id="datalist-triggers" class="doc-card">
+          <span class="badge">DATA LIST INTEGRADO</span>
+          <h2>25. Tabela Completa dos 72 Modelos de Pad e Acionadores (Trig Type)</h2>
+          <p>
+            Indica para cada pad e trigger Roland (páginas 47 e 48 do Data List) se há suporte a Rim Shot, Bell Shot, Detecção Posicional na Pele/Bow, Detecção Posicional no Aro e Choke Play.
+          </p>
+          <p><a class="nav-link-btn btn-primary" href="index.html?screen=TRIGGER_BANK">Abrir a Tela TRIGGER BANK no Painel do Módulo</a></p>
+          <div id="datalist-triggers-body"></div>
+        </article>
+
+        <!-- Seção 26: Data List - 52 Kit Phrases e 37 Músicas Internas -->
+        <article id="datalist-phrases-songs" class="doc-card">
+          <span class="badge">DATA LIST INTEGRADO</span>
+          <h2>26. Lista Completa das 52 Kit Phrases e 37 Músicas Internas (Song List)</h2>
+          <p><a class="nav-link-btn btn-primary" href="index.html?screen=SONG_MAIN">Abrir a Tela SONG no Painel do Módulo</a></p>
+          <div id="datalist-phrases-songs-body"></div>
+        </article>
+
+        <!-- Seção 27: Mensagens de Erro e Solução de Problemas -->
+        <article id="datalist-errors-troubleshooting" class="doc-card">
+          <span class="badge">REFERÊNCIA COMPLETA</span>
+          <h2>27. Mensagens de Erro e Guia Completo de Solução de Problemas</h2>
+          <div id="datalist-errors-body"></div>
+        </article>
+      </main>
+    </div>
+  </div>
+
+  <!-- Dados Completos -->
+  <script src="data/kits_and_lists.js"></script>
+  <script src="data/instruments.js"></script>
+  <script src="data/effects.js"></script>
+  <script src="data/manual_sections.js"></script>
+  <script src="data/screens_and_menus.js"></script>
+  <!-- Renderizador do Manual Integrado -->
+  <script src="manual.js"></script>
+</body>
+</html>
