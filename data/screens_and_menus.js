@@ -1,4 +1,20 @@
-// Mapeamento completo de todas as telas, menus, grades, cursores e botões F1-F6 do módulo Roland V31 (TD-316)
+/**
+ * ============================================================================
+ * ROLAND V31 (TD-316) — ÁRVORE DE TELAS, MENUS, CURSORES E BOTÕES F1–F6
+ * ============================================================================
+ * Exporta `window.V31_SCREENS` (Mapa indexado por ID da tela, ex: "KIT", "MENU").
+ * Estrutura de cada tela:
+ * - `id`: Código único da tela (usado no roteamento `?screen=` e em `state.currentScreenId`)
+ * - `title`: Nome exibido no cabeçalho do visor LCD e anunciada ao leitor de telas
+ * - `manualSectionId`: ID da seção correspondente em `window.V31_MANUAL_SECTIONS`
+ * - `category`: Agrupamento funcional (ex: "Menu Principal", "KIT EDIT", "SYSTEM")
+ * - `accessPath`: Caminho físico e atalhos para chegar à tela
+ * - `visualDescription`: Descrição detalhada da geometria da tela e navegação por setas
+ * - `fButtons`: Array de 6 objetos (`num: 1..6`, `label`, `action`, `target`, `description`)
+ * - `items`: Lista de campos/parâmetros interativos com coordenadas (`row`, `col`),
+ *            tipo (`select`, `range`, `action`, `toggle`), valores e descrição acessível.
+ * ============================================================================
+ */
 window.V31_SCREENS = {
   MENU: {
     id: "MENU",

@@ -1,3 +1,22 @@
+# Configurações locais da Netlify e ambientes
 .netlify/
+.env
+.env.*
+*.pem
+*.key
+*.log
+
+# Dependências e diretórios de build
+node_modules/
+dist/
+
+# Editores / IDEs e Sistema Operacional
+.vscode/
+.idea/
 .DS_Store
 Thumbs.db
+desktop.ini
+
+# Arquivos brutos de referência externa (se copiados para a pasta)
+*.pdf
+raw_manual_pt/

@@ -1,6 +1,20 @@
-// Manual de Referência + Data List Integrado e Acessível para Pessoas Cegas (Roland V31 / TD-316)
-// Compilação completa e fiel combinando V31_Reference_ptb03_W.pdf (234 páginas) e V31_DataList_eng02_W.pdf (121 páginas).
-
+/**
+ * ============================================================================
+ * ROLAND V31 (TD-316) — SEÇÕES DO MANUAL DE REFERÊNCIA + PARÂMETROS DATA LIST
+ * ============================================================================
+ * Exporta `window.V31_MANUAL_SECTIONS` (Array de 21 seções temáticas).
+ * Estrutura de cada seção:
+ * - `id`: Identificador único de âncora HTML (ex: "painel-fisico", "menu-principal")
+ * - `chapter`: Rótulo do capítulo exibido no badge
+ * - `title`: Título descritivo completo da seção
+ * - `simulatorScreenId`: ID da tela correspondente em `window.V31_SCREENS`
+ * - `summary`: Resumo objetivo da funcionalidade
+ * - `navigationSteps`: Array ordenado com o passo a passo por contagem de setas
+ * - `screenLayoutDescription`: Descrição espacial/tátil da tela
+ * - `fButtonsTable`: Tabela de funções dos botões [F1]–[F6] e combinações [SHIFT]
+ * - `parameterTables`: Tabelas completas de parâmetros, faixas de valores e posições
+ * ============================================================================
+ */
 window.V31_MANUAL_SECTIONS = [
   {
     id: "painel-fisico",

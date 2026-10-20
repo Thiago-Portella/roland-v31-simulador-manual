@@ -59,6 +59,7 @@ Projetado especialmente para permitir a exploração completa da árvore de tela
 ├── styles.css                  # Estilos de alto contraste e layout responsivo/acessível
 ├── simulator.js                # Motor operacional do módulo V31 e integração NVDA
 ├── manual.js                   # Renderizador dinâmico e busca em tempo real do Manual/Data List
+├── LICENSE                     # Licença MIT
 └── data/
     ├── screens_and_menus.js    # Mapeamento completo das telas, menus, cursores e F1–F6
     ├── manual_sections.js      # 21 capítulos do Manual de Referência + tabelas de parâmetros
@@ -69,6 +70,28 @@ Projetado especialmente para permitir a exploração completa da árvore de tela
 
 ---
 
+## 🛠️ Arquitetura e Guia de Manutenção
+
+O projeto foi desenhado em **JavaScript Vanilla modularizado por arquivos de dados**, sem necessidade de bundlers ou etapas de compilação, facilitando a leitura, auditoria e manutenção direta.
+
+### 1. Contratos de Dados Globais (`data/*.js`)
+Cada arquivo dentro de `data/` expõe um único objeto estruturado em `window` (encapsulado em IIFE para não poluir o escopo global):
+- **`window.V31_SCREENS`** (`data/screens_and_menus.js`): Dicionário de todas as telas do módulo indexado pelo `id` da tela (ex.: `KIT`, `MENU`, `KIT_EDIT_INST`, `BUS_FX_EDIT`). Cada tela define:
+  - `title`, `category`, `manualSectionId`, `accessPath` e `visualDescription`;
+  - `fButtons`: Array com os 6 botões de função (`F1`–`F6`) e ações (`goto`, `tab`, `toggle`, `action`);
+  - `items`: Campos editáveis com coordenadas 2D (`row`, `col`), tipo de controle e faixa de valores.
+- **`window.V31_MANUAL_SECTIONS`** (`data/manual_sections.js`): Array com os 21 capítulos do Manual de Referência combinados às faixas de valores do Data List (`navigationSteps`, `screenLayoutDescription`, `fButtonsTable` e `parameterTables`).
+- **`window.V31_KITS_AND_LISTS`** (`data/kits_and_lists.js`): Contém `drumKits` (200 kits), `kitPhrases` (52 frases), `songs` (37 músicas), `trigTypes` (72 modelos de pad), `pads`, `setListBanks`, `expansions`, `errorMessages` e `troubleshooting`.
+- **`window.V31_INSTRUMENTS`** (`data/instruments.js`): Contém `preset` (246 instrumentos internos), `exv001` (30), `exv002` (712), `exv003` (22), `specialBanks` e `remarksLegend`.
+- **`window.V31_EFFECTS`** (`data/effects.js`): Contém `categories` (13 categorias) e `effects` (94 algoritmos Multi-Effects / BUS FX com todos os seus parâmetros e fluxo de sinal).
+
+### 2. Motor de Acessibilidade e Estado (`simulator.js`)
+- **Anúncio Assertivo para NVDA (`announce()`)**: Alterna dinamicamente entre duas regiões `#nvda-live-a` e `#nvda-live-b` (`aria-live="assertive"`), garantindo que o leitor de telas anuncie imediatamente mesmo quando o usuário pressiona a mesma tecla repetidamente.
+- **Persistência (`localStorage`)**: Todas as alterações são salvas sob a chave `roland_v31_module_memory_v1`. O botão **Restaurar Memória de Fábrica** limpa esse armazenamento e recarrega o estado padrão (`defaultState`).
+- **Roteamento Direto por URL**: Suporta abrir diretamente qualquer tela via query string (ex.: `index.html?screen=BUS_FX_EDIT`), permitindo navegação cruzada entre o Manual (`manual.html`) e o Simulador (`index.html`).
+
+---
+
 ## 🚀 Como Executar Localmente
 
 Por ser uma aplicação web 100% estática (HTML5, CSS3 e JavaScript Vanilla sem dependências externas), basta abrir o arquivo `index.html` diretamente no navegador ou servir a pasta com qualquer servidor HTTP estático:
@@ -76,3 +99,9 @@ Por ser uma aplicação web 100% estática (HTML5, CSS3 e JavaScript Vanilla sem
 ```bash
 npx serve .
 ```
+
+---
+
+## 📄 Licença
+
+Distribuído sob a licença **MIT**. Veja o arquivo [LICENSE](LICENSE) para mais informações.

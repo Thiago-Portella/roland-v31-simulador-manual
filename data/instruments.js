@@ -1,4 +1,18 @@
+/**
+ * ============================================================================
+ * ROLAND V31 (TD-316) — DATA LIST: 1.010 INSTRUMENTOS E BANCOS DE EXPANSÃO
+ * ============================================================================
+ * Exporta `window.V31_INSTRUMENTS` contendo:
+ * - `remarksLegend`: Legenda das marcas de recursos (*M, *P, *X, *O, *B, *L)
+ * - `preset`: 246 instrumentos internos de fábrica (0: OFF a 245: For Pad Check)
+ * - `exv001`: 30 instrumentos da expansão Wood Room Studio UK 1
+ * - `exv002`: 712 instrumentos da expansão Electronic&Percussion 1
+ * - `exv003`: 22 instrumentos da expansão The Brush 1
+ * - `specialBanks`: Metadados dos bancos SYNTH WAVE e USER SAMPLE (U001–U500)
+ * ============================================================================
+ */
 (function () {
+  "use strict";
   const expand = (list) =>
     list.map(([no, group, name, remarks = ""]) => ({
       no,

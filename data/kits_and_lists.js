@@ -1,5 +1,21 @@
-// Dados estruturados completos do módulo Roland V-Drums V31
-// Extraídos de V31_DataList_eng02_W.pdf e V31_Reference_ptb03_W.pdf
+/**
+ * ============================================================================
+ * ROLAND V31 (TD-316) — DATA LIST: KITS, FRASES, MÚSICAS, TRIGGERS E ERROS
+ * ============================================================================
+ * Exporta `window.V31_KITS_AND_LISTS` contendo:
+ * - `drumKits`: Array com os 200 Drum Kits (001–070 Preset, 071–200 User)
+ * - `kitPhrases`: Array com as 52 frases internas de avaliação de kit
+ * - `songs`: Array com as 37 músicas internas do modo SONG
+ * - `trigTypes`: Array com os 72 modelos de pads/acionadores e matriz de suporte
+ * - `pads`: Mapa de entradas físicas/virtuais e zonas do módulo V31
+ * - `setListBanks`: Bancos de Set List de fábrica
+ * - `expansions`: Metadados das expansões pré-instaladas (EXV001, EXV002, EXV003)
+ * - `errorMessages`: Tabela de mensagens de erro do visor e ações corretivas
+ * - `troubleshooting`: Guia estruturado de solução de problemas por categoria
+ * ============================================================================
+ */
+(function () {
+  "use strict";
 
 const PRESET_DRUM_KITS_1_TO_70 = [
   { number: 1, code: "001", name: "Studio A", subName: "" },
@@ -1283,3 +1299,4 @@ window.V31_KITS_AND_LISTS = {
   errorMessages: ERROR_MESSAGES,
   troubleshooting: TROUBLESHOOTING
 };
+})();
