@@ -52,6 +52,9 @@
     keyboardCaptureActive: true,
     activeBusFxUnit: "FX1",
     activeBusLetter: "A", // A, B, C, D na tela BUS_FX_EDIT
+    activeEditLayer: "A", // A, B, C nas telas KIT_EDIT_VEDIT / TRANSIENT / EQ
+    ambSubTab: "MAIN",    // MAIN, SEND, FILTER, ASSIGN nas telas AMBIENCE
+    drumLinkPendingSync: false, // Indica '*' pendente de bater no pad sem fio (Manual p. 166)
     instListTargetKey: "layerAInst",
     nameCharCursor: 0,
     abRepeatState: "OFF", // OFF, POINT_A, ACTIVE
@@ -655,7 +658,9 @@
     COPY_MENU: "COPY_KIT",
     BACKUP_MENU: "BACKUP_SAVE",
     SYSTEM_MENU: "SYSTEM_WIFI",
-    USB_AUDIO: "USB_AUDIO_ROUTING"
+    USB_AUDIO: "USB_AUDIO_ROUTING",
+    SAFETY_MODE: "SAFETY_MODE_ACTIVE",
+    SAFETY_MODE_LOCKED: "SAFETY_MODE_ACTIVE"
   };
 
   function getScreensMap() {
@@ -849,14 +854,22 @@
       };
       const layerDesc = layerLabelMap[targetLayerKey] || "Camada A";
       screen.title = "INST LIST — Grupo: " + grp + " [" + layerDesc + " de " + getCurrentPad().id + "]";
-      if (screen.items && screen.items.length >= 2) {
-        screen.items[1].paramKey = targetLayerKey;
-        screen.items[1].label = "Instrumento Selecionado (" + layerDesc + " — " + filteredInsts.length + " opções no grupo " + grp + ")";
-        screen.items[1].options = filteredInsts;
-        if (!screen.items[1].defaultVal || filteredInsts.indexOf(screen.items[1].defaultVal) === -1) {
-          screen.items[1].defaultVal = filteredInsts[Math.min(1, filteredInsts.length - 1)] || "000 OFF";
+      screen.items = [
+        {
+          id: "instListSelect",
+          label: "Instrumento Selecionado (" + layerDesc + " — Grupo " + grp + ": " + filteredInsts.length + " opções)",
+          paramKey: targetLayerKey,
+          type: "instrument",
+          options: filteredInsts,
+          defaultVal: filteredInsts[Math.min(1, filteredInsts.length - 1)] || "000 OFF",
+          row: 1,
+          col: 1,
+          explanation:
+            "Use Seta Cima [▲] / Seta Baixo [▼] ou o Disco [+]/[-] para selecionar o instrumento dentro do grupo " +
+            grp +
+            ". Use Seta Esquerda [◄] / Seta Direita [►] ou [F4] (<GROUP) / [F5] (GROUP>) para trocar de categoria/grupo. Pressione [ENTER] ou [F6] (CLOSE) para confirmar."
         }
-      }
+      ];
     }
 
     // Enriquecimento dinâmico 2B: Nas telas CLICK_TEMPO, CLICK_SETUP e COACH_STROKE_MONITOR, sincroniza o rótulo de [F6] CLICK [ON/OFF] e o título
@@ -897,7 +910,7 @@
 
       if (isAudioRec) {
         screen.fButtons = [
-          { num: 1, label: "REC MODE", action: "toggle_param", paramKey: "recMode", description: "Alterna o modo de gravação entre DRUM REC (MIDI) e AUDIO REC (WAV)." },
+          { num: 1, label: "REC MODE", action: "goto", target: "REC_MODE_WINDOW", description: "Abre a janela REC MODE para escolher entre DRUM REC (MIDI) e AUDIO REC (WAV) (Manual p. 62)." },
           { num: 2, label: "---", action: "none", description: "Sem função." },
           { num: 3, label: "---", action: "none", description: "Sem função." },
           { num: 4, label: "---", action: "none", description: "Sem função." },
@@ -905,15 +918,13 @@
           { num: 6, label: "---", action: "none", description: "Sem função em AUDIO REC (Overwrite é exclusivo de DRUM REC)." }
         ];
         screen.items = [
-          { id: "rec_mode", label: "1. Rec Mode (F1)", paramKey: "recMode", type: "enum", options: ["DRUM REC (MIDI / SMF)", "AUDIO REC (WAV Audio)"], defaultVal: "AUDIO REC (WAV Audio)", row: 1, col: 1, explanation: "Modo atual: AUDIO REC (grava áudio WAV 44.1kHz 16-bit no cartão SD ou memória temporária)." },
-          { id: "rec_num_aud", label: "2. Rec Number (Definido Automaticamente)", paramKey: "recAudioNumber", type: "enum", options: ["SD#001 (Cartão SD — até 60 min)", "SD#002 (Cartão SD — até 60 min)", "TEMPORARY (Sem Cartão SD — até 1 min)"], defaultVal: "SD#001 (Cartão SD — até 60 min)", row: 2, col: 1, explanation: "Em AUDIO REC, se houver um cartão SD inserido cria automaticamente um novo arquivo (SD#001–200); sem cartão SD grava em TEMPORARY." },
-          { id: "rec_trg", label: "3. Rec Target (Fonte de Áudio)", paramKey: "recTarget", type: "enum", options: ["ALL (Bateria + MIX IN + Bluetooth)", "DRUMS ONLY (Apenas Bateria)"], defaultVal: "ALL (Bateria + MIX IN + Bluetooth)", row: 3, col: 1, explanation: "ALL (grava bateria junto com o som de MIX IN e Bluetooth) ou DRUMS ONLY (grava apenas a bateria — 2 setas para baixo)." },
-          { id: "rec_gain", label: "4. Rec Gain (-24 a +24 dB)", paramKey: "recGain", type: "int", min: -24, max: 24, unit: "dB", defaultVal: 12, row: 4, col: 1, explanation: "Ajusta o ganho de gravação de áudio (-24 a +24 dB) observando o medidor REC L/R à direita (3 setas para baixo)." },
-          { id: "rec_wsong", label: "5. Play and record a song", paramKey: "recWithSongSw", type: "enum", options: ["OFF (Desmarcado)", "ON (Marcado)"], defaultVal: "OFF (Desmarcado)", row: 5, col: 1, explanation: "Quando ON, inicia e grava junto a música selecionada na tela SONG ao pressionar [►/■] (4 setas para baixo)." }
+          { id: "rec_trg", label: "1. Rec Target (Fonte de Áudio)", paramKey: "recTarget", type: "enum", options: ["ALL (Bateria + MIX IN + Bluetooth)", "DRUMS ONLY (Apenas Bateria)"], defaultVal: "ALL (Bateria + MIX IN + Bluetooth)", row: 1, col: 1, explanation: "Linha 1 (posição inicial em AUDIO REC): ALL (grava bateria junto com MIX IN e Bluetooth) ou DRUMS ONLY (grava apenas a bateria). Rec Number (SD#001–200 ou TEMPORARY) é definido automaticamente." },
+          { id: "rec_gain", label: "2. Rec Gain (-24 a +24 dB)", paramKey: "recGain", type: "int", min: -24, max: 24, unit: "dB", defaultVal: 12, row: 2, col: 1, explanation: "Linha 2 (1 seta para baixo [▼]): Ajusta o ganho de gravação de áudio (-24 a +24 dB) observando o medidor REC L/R à direita." },
+          { id: "rec_wsong", label: "3. Play and record a song", paramKey: "recWithSongSw", type: "enum", options: ["OFF (Desmarcado)", "ON (Marcado)"], defaultVal: "OFF (Desmarcado)", row: 3, col: 1, explanation: "Linha 3 (2 setas para baixo [▼]): Quando ON, inicia e grava junto a música selecionada na tela SONG ao pressionar [►/■]." }
         ];
       } else {
         screen.fButtons = [
-          { num: 1, label: "REC MODE", action: "toggle_param", paramKey: "recMode", description: "Alterna o modo de gravação entre DRUM REC (MIDI) e AUDIO REC (WAV)." },
+          { num: 1, label: "REC MODE", action: "goto", target: "REC_MODE_WINDOW", description: "Abre a janela REC MODE para escolher entre DRUM REC (MIDI) e AUDIO REC (WAV) (Manual p. 60)." },
           { num: 2, label: "---", action: "none", description: "Sem função." },
           { num: 3, label: "---", action: "none", description: "Sem função." },
           { num: 4, label: "---", action: "none", description: "Sem função." },
@@ -921,11 +932,94 @@
           { num: 6, label: "Overwrite [" + ovwVal + "]", action: "toggle_param", paramKey: "recOverwriteSw", description: "Marca (ON) ou desmarca (OFF) a permissão para sobrescrever uma gravação existente em DRUM REC." }
         ];
         screen.items = [
-          { id: "rec_mode", label: "1. Rec Mode (F1)", paramKey: "recMode", type: "enum", options: ["DRUM REC (MIDI / SMF)", "AUDIO REC (WAV Audio)"], defaultVal: "DRUM REC (MIDI / SMF)", row: 1, col: 1, explanation: "Modo atual: DRUM REC (grava dados de performance MIDI e eventos de música)." },
-          { id: "rec_num", label: "2. Rec Number (TEMPORARY / SD#01–99)", paramKey: "recNumber", type: "enum", options: ["TEMPORARY (Memória Temporária)", "SD#01: DrumRec01", "SD#02: DrumRec02", "SD#03: -------- (Novo)", "SD#04: -------- (Novo)"], defaultVal: "SD#01: DrumRec01", row: 2, col: 1, explanation: "Número de destino da gravação DRUM REC (TEMPORARY ou SD#01 a SD#99 — 1 seta para baixo)." },
-          { id: "rec_wsong", label: "3. Play a song while recording", paramKey: "recWithSongSw", type: "enum", options: ["OFF (Desmarcado)", "ON (Marcado)"], defaultVal: "OFF (Desmarcado)", row: 3, col: 1, explanation: "Quando ON, reproduz a música selecionada na tela SONG simultaneamente ao iniciar a gravação (2 setas para baixo)." }
+          { id: "rec_num", label: "1. Rec Number (TEMPORARY / SD#01–99)", paramKey: "recNumber", type: "enum", options: ["TEMPORARY (Memória Temporária)", "SD#01: DrumRec01", "SD#02: DrumRec02", "SD#03: -------- (Novo)", "SD#04: -------- (Novo)"], defaultVal: "SD#01: DrumRec01", row: 1, col: 1, explanation: "Linha 1 (posição inicial em DRUM REC): Número de destino da gravação DRUM REC (TEMPORARY ou SD#01 a SD#99)." },
+          { id: "rec_wsong", label: "2. Play a song while recording", paramKey: "recWithSongSw", type: "enum", options: ["OFF (Desmarcado)", "ON (Marcado)"], defaultVal: "OFF (Desmarcado)", row: 2, col: 1, explanation: "Linha 2 (1 seta para baixo [▼]): Quando ON, reproduz a música selecionada na tela SONG simultaneamente ao iniciar a gravação." }
         ];
       }
+    }
+
+    // Enriquecimento dinâmico 2D: Na tela SONG_MAIN, adapta os botões F2–F6 conforme a fonte ativa (SONG SOURCE: INTERNAL, SD CARD, DRUM REC DATA, AUDIO REC DATA — Manual pp. 48–54)
+    if (resolvedId === "SONG_MAIN") {
+      const src = String(state.params.songSource || "INTERNAL (37 Músicas Internas)");
+      const isSd = src.indexOf("SD CARD") !== -1;
+      const isDrumRec = src.indexOf("DRUM REC") !== -1;
+      const isAudioRec = src.indexOf("AUDIO REC") !== -1;
+      const srcBadge = isSd ? "SD CARD" : isDrumRec ? "DRUM REC DATA" : isAudioRec ? "AUDIO REC DATA" : "INTERNAL";
+      screen.title = "SONG - " + srcBadge + (state.songPlaying ? " [► PLAYING]" : " [■ STOPPED]");
+      screen.fButtons = [
+        { num: 1, label: "SONG SOURCE", action: "goto", target: "SONG_SOURCE_WINDOW", description: "Abre a janela SONG SOURCE para escolher entre INTERNAL, SD CARD, DRUM REC DATA e AUDIO REC DATA." },
+        isDrumRec
+          ? { num: 2, label: "DELETE", action: "confirm_action", opType: "song_delete", confirmMsg: "Gravação DRUM REC excluída!", description: "Exclui a gravação DRUM REC selecionada." }
+          : { num: 2, label: "RESET", action: "song_reset_speed", description: "Restaura a velocidade (Speed) da música para 100%." },
+        isSd
+          ? { num: 3, label: "FOLDER", action: "goto", target: "SONG_FOLDER_WINDOW", description: "Abre a janela FOLDER para navegar pelas pastas do cartão SD." }
+          : isAudioRec
+          ? { num: 3, label: "DELETE", action: "confirm_action", opType: "song_delete", confirmMsg: "Gravação AUDIO REC excluída!", description: "Exclui o arquivo de áudio gravado selecionado." }
+          : { num: 3, label: "---", action: "none", description: "Sem função nesta fonte." },
+        isDrumRec
+          ? { num: 4, label: "EXPORT", action: "goto", target: "SONG_EXPORT", description: "Abre a tela DRUM REC DATA EXPORT para exportar a gravação como WAV e/ou SMF para o cartão SD." }
+          : isSd || isAudioRec
+          ? { num: 4, label: "A<->B [" + state.abRepeatState + "]", action: "song_ab_repeat", description: "Marca os pontos A e B para repetição de trecho (A-B Repeat)." }
+          : { num: 4, label: "---", action: "none", description: "Sem função em INTERNAL." },
+        { num: 5, label: "SETUP/INFO", action: "goto", target: "SONG_SETUP_INFO", description: "Abre a janela SONG SETUP/INFO (Loop, Song Level, Click Track Level e informações)." },
+        { num: 6, label: state.songPlaying ? "■ STOP" : "►/■ PLAY", action: "toggle_song", description: "Inicia ou para a reprodução da música selecionada." }
+      ];
+    }
+
+    // Enriquecimento dinâmico 2E: Telas STRAINER_LEVER e STRAINER_SW_KNOB mostram [F3] FX CTRL somente quando Strainer Lever Function = FX CONTROL (Manual pp. 100–101)
+    if (resolvedId === "STRAINER_LEVER" || resolvedId === "STRAINER_SW_KNOB") {
+      const stKey = "K" + state.currentKitNo + "_strainerLeverFunc";
+      const stFunc = state.params[stKey] || "STRAINER ON/OFF";
+      if (stFunc !== "FX CONTROL" && Array.isArray(screen.fButtons)) {
+        screen.fButtons = screen.fButtons.map(function (fb) {
+          if (fb.num === 3) {
+            return { num: 3, label: "---", action: "none", description: "A aba [F3] FX CTRL fica disponível quando Strainer Lever Function é definido como 'FX CONTROL'." };
+          }
+          return fb;
+        });
+      }
+    }
+
+    // Enriquecimento dinâmico 2F: Tela KIT_COLOR mostra Red/Green/Blue apenas quando Kit Color = 11: CUSTOM (Manual p. 104)
+    if (resolvedId === "KIT_COLOR") {
+      const colKey = "K" + state.currentKitNo + "_kitColor";
+      const colVal = state.params[colKey] || "1: WHITE";
+      if (colVal !== "11: CUSTOM" && Array.isArray(screen.items)) {
+        screen.items = screen.items.slice(0, 1);
+      }
+    }
+
+    // Enriquecimento dinâmico 2G: Tela KIT_VIEW mostra [F6] IMG IMPORT apenas quando Kit View Image = ON (Manual pp. 104–105)
+    if (resolvedId === "KIT_VIEW") {
+      const imgKey = "K" + state.currentKitNo + "_kitViewImage";
+      const imgVal = state.params[imgKey] || "ON";
+      if (imgVal !== "ON" && Array.isArray(screen.fButtons)) {
+        screen.fButtons = screen.fButtons.map(function (fb) {
+          if (fb.num === 6) {
+            return { num: 6, label: "---", action: "none", description: "O botão [F6] IMG IMPORT aparece quando '1. Kit View Image' está definido como 'ON'." };
+          }
+          return fb;
+        });
+      }
+    }
+
+    // Enriquecimento dinâmico 2H: Telas KIT_EDIT_VEDIT, KIT_EDIT_TRANSIENT e KIT_EDIT_EQ indicam a Camada Ativa (A, B ou C) e permitem alternar com [SHIFT]+[▲]/[▼] (Manual p. 79)
+    if (resolvedId === "KIT_EDIT_VEDIT" || resolvedId === "KIT_EDIT_TRANSIENT" || resolvedId === "KIT_EDIT_EQ") {
+      const curL = state.activeEditLayer || "A";
+      screen.title = screen.title + " [Camada em Edição: LAYER " + curL + " — use SHIFT + Cima/Baixo para trocar A/B/C]";
+    }
+
+    // Enriquecimento dinâmico 2I: Telas DRUMLINK indicam '*' quando há alterações pendentes de sincronizar batendo no pad sem fio (Manual pp. 166, 171)
+    if (
+      resolvedId === "DRUMLINK_BASIC" ||
+      resolvedId === "DRUMLINK_CURVE" ||
+      resolvedId === "DRUMLINK_OPT_ADV" ||
+      resolvedId === "DRUMLINK_INPUT_CONFIG"
+    ) {
+      const syncBadge = state.drumLinkPendingSync
+        ? " [* Pendente: Bata no pad (Tecla B) para aplicar ao pad sem fio]"
+        : " [Sincronizado com o pad sem fio]";
+      screen.title = screen.title + syncBadge;
     }
 
     // Enriquecimento dinâmico 3: Telas KIT e KIT_LIST com Sistema de Favoritos (★) e Alternância entre as 2 Listas (ALL / ★)
@@ -1340,11 +1434,12 @@
       return formatFloatValue(getRawItemValue(item), item);
     }
     if (item.type === "text_v31") {
+      const maxLen = item.maxLen || 16;
       const rawTxt = String(getRawItemValue(item) || "");
-      const padded = (rawTxt + "                ").slice(0, 16);
-      const pos = Math.max(0, Math.min(15, state.nameCharCursor || 0));
+      const padded = rawTxt.padEnd(maxLen, " ").slice(0, maxLen);
+      const pos = Math.max(0, Math.min(maxLen - 1, state.nameCharCursor || 0));
       const ch = padded.charAt(pos) === " " ? "␣ (Espaço)" : padded.charAt(pos);
-      return '"' + rawTxt + '" [Caractere ' + (pos + 1) + "/16: '" + ch + "']";
+      return '"' + rawTxt + '" [Caractere ' + (pos + 1) + "/" + maxLen + ": '" + ch + "']";
     }
     const scopedKey = getScopedParamKey(item);
     if (scopedKey && state.params[scopedKey] !== undefined) {
@@ -1368,11 +1463,11 @@
       if (state.params.clickTempo !== undefined) return state.params.clickTempo;
       return state.clickTempo || 120.0;
     }
-    if (item.paramKey === "kitNameStr") {
+    if (item.paramKey === "kitNameStr" || item.paramKey === "currentKitName") {
       const kInfo = getKitInfo(state.currentKitNo);
       return kInfo.name;
     }
-    if (item.paramKey === "kitSubNameStr") {
+    if (item.paramKey === "kitSubNameStr" || item.paramKey === "currentKitSubName") {
       const kInfo = getKitInfo(state.currentKitNo);
       return kInfo.subName;
     }
@@ -1416,6 +1511,21 @@
 
     const screen = getEffectiveScreen(state.currentScreenId);
     if (!screen || !screen.items || screen.items.length === 0) return;
+
+    // Nas telas de grade de ícones (KIT_TOOLS, COACH_MENU, DRUMLINK_TOOLS), girar o Disco [+]/[-] percorre sequencialmente os ícones!
+    if (screen.layoutType === "grid_menu") {
+      const nextIdx = Math.max(0, Math.min(screen.items.length - 1, state.cursorIndex + (delta > 0 ? 1 : -1)));
+      if (nextIdx !== state.cursorIndex) {
+        state.cursorIndex = nextIdx;
+        saveState();
+        renderAll();
+        announceCurrentItem("Disco: ");
+      } else {
+        announceCurrentItem("Limite da grade atingido. ");
+      }
+      return;
+    }
+
     const item = screen.items[state.cursorIndex] || screen.items[0];
     if (!item) return;
 
@@ -1460,6 +1570,11 @@
     const scopedKey = getScopedParamKey(item);
     if (!scopedKey) return;
 
+    // Marca '*' pendente ao editar parâmetros DrumLink (Manual pp. 166, 171)
+    if (item.paramKey && item.paramKey.indexOf("dl") === 0) {
+      state.drumLinkPendingSync = true;
+    }
+
     if (
       item.type === "enum" ||
       item.type === "pan" ||
@@ -1483,10 +1598,20 @@
       const newVal = opts[nextIdx];
       state.params[scopedKey] = newVal;
 
-      // Se estamos na janela INST_LIST_WINDOW alterando o instrumento temporário, sincroniza com a camada ativa (A ou B) do pad!
+      // Em EZ_EDIT_MUFFLING com GROUP = ON (Manual p. 72), girar o disco ajusta as Camadas A, B e C simultaneamente!
+      const grpSwKey = "K" + state.currentKitNo + "_ezGroupSw";
+      const isEzGroupOn = (state.params[grpSwKey] || "ON") === "ON";
+      if (state.currentScreenId === "EZ_EDIT_MUFFLING" && isEzGroupOn) {
+        const padId = getCurrentPad().id;
+        ["layerAMuffling", "layerBMuffling", "layerCMuffling"].forEach(function (lk) {
+          state.params["K" + state.currentKitNo + "_" + padId + "_" + lk] = newVal;
+        });
+      }
+
+      // Se estamos na janela INST_LIST_WINDOW alterando o instrumento temporário, sincroniza com a camada ativa (A, B, C ou XSTICK) do pad!
       if (item.paramKey === "instListTempInst") {
         const targetLayerKey = state.instListTargetKey || "layerAInst";
-        const padKey = "K" + state.currentKitNo + "_P" + getCurrentPad().id + "_" + targetLayerKey;
+        const padKey = "K" + state.currentKitNo + "_" + getCurrentPad().id + "_" + targetLayerKey;
         state.params[padKey] = newVal;
       }
 
@@ -1497,7 +1622,14 @@
 
       saveState();
       renderAll();
-      announce(item.label + ": " + newVal);
+      announce(
+        item.label +
+          ": " +
+          newVal +
+          (state.currentScreenId === "EZ_EDIT_MUFFLING" && isEzGroupOn
+            ? " (GROUP = ON: Camadas A, B e C ajustadas em conjunto)"
+            : "")
+      );
       return;
     }
 
@@ -1540,9 +1672,53 @@
       if (item.paramKey === "clickTempo") {
         state.clickTempo = nextVal;
       }
+      // Em EZ_EDIT_TUNING com GROUP = ON (Manual p. 70), girar o disco ajusta as Camadas A, B e C proporcionalmente em conjunto!
+      const grpSwKey = "K" + state.currentKitNo + "_ezGroupSw";
+      const isEzGroupOn = (state.params[grpSwKey] || "ON") === "ON";
+      if (state.currentScreenId === "EZ_EDIT_TUNING" && isEzGroupOn) {
+        const padId = getCurrentPad().id;
+        const diff = nextVal - curVal;
+        ["layerATuning", "layerBTuning", "layerCTuning"].forEach(function (lk, idx) {
+          const lkScoped = "K" + state.currentKitNo + "_" + padId + "_" + lk;
+          if (lkScoped !== scopedKey) {
+            const defVals = [-10, -18, 0];
+            const prevV = state.params[lkScoped] !== undefined ? Number(state.params[lkScoped]) : defVals[idx];
+            state.params[lkScoped] = Math.max(min, Math.min(max, prevV + diff));
+          }
+        });
+      }
+      // Na tela SET_LIST, alterar setListStep chama o Drum Kit correspondente daquela etapa!
+      if (item.paramKey === "setListStep" && state.currentScreenId === "SET_LIST") {
+        const bankNo = Number(state.params.setListBank || 1);
+        const stepKitKey = "SL_B" + bankNo + "_S" + nextVal + "_kit";
+        const assignedKit = state.params[stepKitKey] || ((nextVal - 1) % 70) + 1;
+        state.currentKitNo = Math.max(1, Math.min(200, Number(assignedKit)));
+        const k = getKitInfo(state.currentKitNo);
+        saveState();
+        renderAll();
+        announce(
+          "Set List Banco " +
+            bankNo +
+            " — Step " +
+            nextVal +
+            "/32: Chamado Drum Kit " +
+            k.code +
+            " " +
+            k.name +
+            "."
+        );
+        return;
+      }
       saveState();
       renderAll();
-      announce(item.label + ": " + getItemValue(item));
+      announce(
+        item.label +
+          ": " +
+          getItemValue(item) +
+          (state.currentScreenId === "EZ_EDIT_TUNING" && isEzGroupOn
+            ? " (GROUP = ON: Camadas A, B e C ajustadas em conjunto)"
+            : "")
+      );
       return;
     }
 
@@ -1587,10 +1763,12 @@
     }
 
     if (item.type === "text_v31") {
-      const charset = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_+*/=()[]!?.,";
+      // Tabela oficial de caracteres do Roland V31 (Manual p. 103)
+      const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
+      const maxLen = item.maxLen || 16;
       const curStr = String(getRawItemValue(item) || "");
-      const padded = (curStr + "                ").slice(0, 16);
-      const pos = Math.max(0, Math.min(15, state.nameCharCursor || 0));
+      const padded = curStr.padEnd(maxLen, " ").slice(0, maxLen);
+      const pos = Math.max(0, Math.min(maxLen - 1, state.nameCharCursor || 0));
       const curCh = padded.charAt(pos);
       let chIdx = charset.indexOf(curCh);
       if (chIdx === -1) chIdx = 0;
@@ -1599,9 +1777,9 @@
       const newCh = charset.charAt(nextChIdx);
       const updated = (padded.slice(0, pos) + newCh + padded.slice(pos + 1)).replace(/\s+$/, "");
       state.params[scopedKey] = updated;
-      if (item.paramKey === "kitNameStr") {
+      if (item.paramKey === "kitNameStr" || item.paramKey === "currentKitName") {
         state.kitNames[state.currentKitNo] = updated || "Init Kit";
-      } else if (item.paramKey === "kitSubNameStr") {
+      } else if (item.paramKey === "kitSubNameStr" || item.paramKey === "currentKitSubName") {
         state.kitSubNames[state.currentKitNo] = updated;
       }
       saveState();
@@ -1610,7 +1788,9 @@
         item.label +
           " — Posição " +
           (pos + 1) +
-          "/16 alterada para '" +
+          "/" +
+          maxLen +
+          " alterada para '" +
           (newCh === " " ? "Espaço" : newCh) +
           "'. Texto atual: \"" +
           updated +
@@ -1634,9 +1814,9 @@
       let idx = sampleNames.indexOf(curVal);
       idx = (idx + (delta > 0 ? 1 : sampleNames.length - 1)) % sampleNames.length;
       state.params[scopedKey] = sampleNames[idx];
-      if (item.paramKey === "kitNameStr") {
+      if (item.paramKey === "kitNameStr" || item.paramKey === "currentKitName") {
         state.kitNames[state.currentKitNo] = sampleNames[idx];
-      } else if (item.paramKey === "kitSubNameStr") {
+      } else if (item.paramKey === "kitSubNameStr" || item.paramKey === "currentKitSubName") {
         state.kitSubNames[state.currentKitNo] = sampleNames[idx];
       }
       saveState();
@@ -1778,69 +1958,163 @@
     }
   }
 
+  const INST_GROUPS_ORDER = [
+    "KICK", "KICK OTHERS", "KICK ELEC", "SNARE", "CROSS STICK", "SNARE OTHERS", "SNARE ELEC",
+    "TOM", "TOM OTHERS", "TOM ELEC", "HI-HAT", "HI-HAT OTHERS", "HI-HAT ELEC", "RIDE",
+    "CRASH", "CHINA", "SPLASH", "STACKED CYMBAL", "CYMBAL OTHERS", "CYMBAL ELEC",
+    "BELL/CHIME/GONG", "BLOCK/COWBELL", "PERCUSSION", "PERC ELEC", "CLAP", "SOUND FX",
+    "ELEMENTS", "SYNTH WAVE", "USER SAMPLE"
+  ];
+
+  function stepInstGroup(delta, sourcePrefix) {
+    const curGrp = state.params.instGroupFilter || "KICK";
+    let gIdx = INST_GROUPS_ORDER.indexOf(curGrp);
+    if (gIdx === -1) gIdx = 0;
+    const nextIdx = Math.max(0, Math.min(INST_GROUPS_ORDER.length - 1, gIdx + (delta > 0 ? 1 : -1)));
+    const newGrp = INST_GROUPS_ORDER[nextIdx];
+    state.params.instGroupFilter = newGrp;
+    const filteredInsts = getInstrumentOptionsList(newGrp);
+    const firstInst = filteredInsts[Math.min(1, filteredInsts.length - 1)] || filteredInsts[0] || "000 OFF";
+    const targetLayerKey = state.instListTargetKey || "layerAInst";
+    const padKey = "K" + state.currentKitNo + "_" + getCurrentPad().id + "_" + targetLayerKey;
+    state.params[padKey] = firstInst;
+    saveState();
+    renderAll();
+    announce(
+      (sourcePrefix ? sourcePrefix + " — " : "") +
+        "Grupo de Instrumentos (" +
+        (nextIdx + 1) +
+        " de " +
+        INST_GROUPS_ORDER.length +
+        "): " +
+        newGrp +
+        " (" +
+        filteredInsts.length +
+        " instrumentos). Selecionado: " +
+        firstInst +
+        "."
+    );
+  }
+
   // Navegação 2D por setas nas demais telas do módulo (sem avanço circular de linha nas setas Esquerda/Direita)
-  function moveScreenCursor(dRow, dCol) {
-    if (state.currentScreenId === "MENU" && !state.confirmDialog) {
+  function moveScreenCursor(dRow, dCol, isShift) {
+    const curScreenId = resolveScreenId(state.currentScreenId);
+    if (curScreenId === "MENU" && !state.confirmDialog) {
       moveMenuCursor(dRow, dCol);
       return;
     }
 
-    const screen = getEffectiveScreen(state.currentScreenId);
+    const screen = getEffectiveScreen(curScreenId);
     if (!screen || !screen.items || screen.items.length === 0) return;
 
     const items = screen.items;
     const current = items[state.cursorIndex] || items[0];
 
-    // Comportamento nas telas KIT, KIT_LIST e SAFETY_MODE:
-    // Setas Cima/Baixo no item 0 percorrem a lista ativa de kits (Todos os 200 ou Apenas Favoritos)!
-    // Na tela KIT, Setas Esquerda/Direita no item 0 alternam a página de visualização (1: NORMAL, 2: TEMPO & PHRASE, 3: PAD SET / KIT DIAGRAM)!
+    // Comportamento nas telas KIT, KIT_LIST, SAFETY_MODE_ACTIVE e SET_LIST (Manual pp. 27–29, 56, 146):
+    // Setas Cima/Baixo [▲]/[▼] percorrem a lista ativa de kits (ou Steps na SET_LIST)!
+    // Setas Esquerda/Direita [◄]/[►] alternam as 3 páginas visuais (● ○ ○ / ○ ● ○ / ○ ○ ●)!
     if (
       !state.confirmDialog &&
-      (state.currentScreenId === "KIT" ||
-        state.currentScreenId === "KIT_LIST" ||
-        state.currentScreenId === "SAFETY_MODE") &&
-      state.cursorIndex === 0
+      (curScreenId === "KIT" ||
+        curScreenId === "KIT_LIST" ||
+        curScreenId === "SAFETY_MODE_ACTIVE" ||
+        curScreenId === "SET_LIST")
     ) {
       if (dRow !== 0) {
-        stepKitSelection(dRow, false, dRow > 0 ? "Seta Baixo" : "Seta Cima");
+        if (curScreenId === "SET_LIST") {
+          adjustCurrentValue(dRow, isShift);
+        } else {
+          stepKitSelection(dRow, isShift, dRow > 0 ? "Seta Baixo" : "Seta Cima");
+        }
         return;
       }
-      if (dCol !== 0 && state.currentScreenId === "KIT") {
-        const pageItem = items.find(function (it) { return it.paramKey === "kitViewPage"; });
-        if (pageItem && pageItem.options) {
-          const curPage = String(getRawItemValue(pageItem));
-          let pIdx = pageItem.options.indexOf(curPage);
-          if (pIdx === -1) pIdx = 0;
-          const nextPIdx = Math.max(0, Math.min(pageItem.options.length - 1, pIdx + dCol));
-          const newPage = pageItem.options[nextPIdx];
-          state.params.kitViewPage = newPage;
-          saveState();
-          renderAll();
-          announce(
-            (dCol > 0 ? "Seta Direita" : "Seta Esquerda") +
-              " — Página de visualização da tela KIT: " +
-              newPage
-          );
-          return;
-        }
+      if (dCol !== 0 && curScreenId !== "KIT_LIST") {
+        const pageOptions = [
+          "1: Número e Nome do Kit (● ○ ○)",
+          "2: Medidores de Saída MASTER e PHONES (○ ● ○)",
+          "3: Medidor de Velocity e Gráfico de Pads (○ ○ ●)"
+        ];
+        const curPage = String(state.params.kitScreenPage || pageOptions[0]);
+        let pIdx = pageOptions.findIndex(function (opt) {
+          return opt.charAt(0) === curPage.charAt(0);
+        });
+        if (pIdx === -1) pIdx = 0;
+        const nextPIdx = Math.max(0, Math.min(pageOptions.length - 1, pIdx + (dCol > 0 ? 1 : -1)));
+        const newPage = pageOptions[nextPIdx];
+        state.params.kitScreenPage = newPage;
+        saveState();
+        renderAll();
+        announce(
+          (dCol > 0 ? "Seta Direita [►]" : "Seta Esquerda [◄]") +
+            " — Página de visualização da tela " +
+            curScreenId +
+            ": " +
+            newPage
+        );
+        return;
       }
     }
 
-    // Na tela KIT_NAME, Setas Esquerda/Direita em um item text_v31 movem o cursor entre os 16 caracteres!
+    // Na janela INST_LIST_WINDOW (Manual pp. 122–123):
+    // Setas Esquerda/Direita [◄]/[►] trocam o Grupo de Instrumentos (<GROUP / GROUP>), e Setas Cima/Baixo [▲]/[▼] percorrem os instrumentos do grupo!
+    if (!state.confirmDialog && curScreenId === "INST_LIST_WINDOW") {
+      if (dCol !== 0) {
+        stepInstGroup(dCol, dCol > 0 ? "Seta Direita [►] (GROUP>)" : "Seta Esquerda [◄] (<GROUP)");
+        return;
+      }
+      if (dRow !== 0) {
+        adjustCurrentValue(dRow, isShift);
+        return;
+      }
+    }
+
+    // Nas telas KIT_EDIT_VEDIT, KIT_EDIT_TRANSIENT e KIT_EDIT_EQ (Manual p. 79):
+    // [SHIFT] + [▲]/[▼] pula diretamente entre as Camadas A, B e C!
+    if (
+      !state.confirmDialog &&
+      (curScreenId === "KIT_EDIT_VEDIT" ||
+        curScreenId === "KIT_EDIT_TRANSIENT" ||
+        curScreenId === "KIT_EDIT_EQ") &&
+      dRow !== 0 &&
+      isShift
+    ) {
+      const layers = ["A", "B", "C"];
+      const curLIdx = Math.max(0, layers.indexOf(state.activeEditLayer || "A"));
+      const nextLIdx = Math.max(0, Math.min(2, curLIdx + (dRow > 0 ? 1 : -1)));
+      state.activeEditLayer = layers[nextLIdx];
+      state.cursorIndex = 0;
+      saveState();
+      renderAll();
+      announceCurrentItem(
+        "SHIFT + " +
+          (dRow > 0 ? "Seta Baixo" : "Seta Cima") +
+          " — Pulou diretamente para a Camada " +
+          state.activeEditLayer +
+          " (LAYER " +
+          state.activeEditLayer +
+          "). "
+      );
+      return;
+    }
+
+    // Na tela KIT_NAME ou BACKUP_SAVE, Setas Esquerda/Direita em um item text_v31 movem o cursor entre os caracteres (16 ou 64)!
     if (!state.confirmDialog && current && current.type === "text_v31" && dCol !== 0) {
+      const maxLen = current.maxLen || 16;
       const curPos = state.nameCharCursor || 0;
-      const nextPos = Math.max(0, Math.min(15, curPos + dCol));
+      const nextPos = Math.max(0, Math.min(maxLen - 1, curPos + dCol));
       state.nameCharCursor = nextPos;
       saveState();
       renderAll();
       const rawTxt = String(getRawItemValue(current) || "");
-      const padded = (rawTxt + "                ").slice(0, 16);
+      const padded = rawTxt.padEnd(maxLen, " ").slice(0, maxLen);
       const ch = padded.charAt(nextPos) === " " ? "Espaço" : padded.charAt(nextPos);
       announce(
         current.label +
           " — Cursor de caractere na posição " +
           (nextPos + 1) +
-          " de 16 ('" +
+          " de " +
+          maxLen +
+          " ('" +
           ch +
           "'). Gire o disco [+]/[-] para alterar a letra."
       );
@@ -1853,37 +2127,61 @@
     let nextIdx = -1;
 
     if (dRow !== 0) {
-      const targetRow = curRow + dRow;
-      // Tenta mesma coluna na linha alvo
-      nextIdx = items.findIndex(function (it, idx) {
-        const r = it.row || idx + 1;
-        const c = it.col || 1;
-        return r === targetRow && c === curCol;
-      });
-      // Se a linha alvo existe mas tem menos colunas, seleciona a coluna mais próxima naquela linha
-      if (nextIdx === -1) {
-        const sameRowItems = items
-          .map(function (it, idx) {
-            return { it: it, idx: idx, r: it.row || idx + 1, c: it.col || 1 };
-          })
-          .filter(function (x) {
-            return x.r === targetRow;
-          });
-        if (sameRowItems.length > 0) {
-          sameRowItems.sort(function (a, b) {
-            return Math.abs(a.c - curCol) - Math.abs(b.c - curCol);
-          });
-          nextIdx = sameRowItems[0].idx;
+      // Procura a linha mais próxima na direção dRow (r > curRow se dRow > 0, r < curRow se dRow < 0)
+      const candidateRows = items
+        .map(function (it, idx) {
+          return { it: it, idx: idx, r: it.row || idx + 1, c: it.col || 1 };
+        })
+        .filter(function (x) {
+          return dRow > 0 ? x.r > curRow : x.r < curRow;
+        });
+
+      if (candidateRows.length > 0) {
+        candidateRows.sort(function (a, b) {
+          const rowDiffA = Math.abs(a.r - curRow);
+          const rowDiffB = Math.abs(b.r - curRow);
+          if (rowDiffA !== rowDiffB) return rowDiffA - rowDiffB;
+          return Math.abs(a.c - curCol) - Math.abs(b.c - curCol);
+        });
+        nextIdx = candidateRows[0].idx;
+      } else if (
+        curScreenId === "KIT_EDIT_VEDIT" ||
+        curScreenId === "KIT_EDIT_TRANSIENT" ||
+        curScreenId === "KIT_EDIT_EQ"
+      ) {
+        // Ao passar da última linha de uma camada em V-EDIT/TRANSIENT/EQ, avança para a próxima camada (A -> B -> C)
+        const layers = ["A", "B", "C"];
+        const curLIdx = Math.max(0, layers.indexOf(state.activeEditLayer || "A"));
+        const nextLIdx = curLIdx + (dRow > 0 ? 1 : -1);
+        if (nextLIdx >= 0 && nextLIdx <= 2) {
+          state.activeEditLayer = layers[nextLIdx];
+          state.cursorIndex = dRow > 0 ? 0 : items.length - 1;
+          saveState();
+          renderAll();
+          announceCurrentItem("Avançou para a Camada " + state.activeEditLayer + " (LAYER " + state.activeEditLayer + "). ");
+          return;
         }
       }
     } else if (dCol !== 0) {
-      // Seta Esquerda/Direita move-se ESTRITAMENTE dentro da mesma linha (curRow), sem avançar para outra linha
-      const targetCol = curCol + dCol;
-      nextIdx = items.findIndex(function (it, idx) {
-        const r = it.row || idx + 1;
-        const c = it.col || 1;
-        return r === curRow && c === targetCol;
-      });
+      // Seta Esquerda/Direita move-se para a coluna mais próxima na direção dCol (sem avanço circular de linha),
+      // priorizando a mesma linha (curRow) ou a linha mais próxima disponível naquela coluna (ex: EZ_EDIT_VOLUME Col 2, SET_LIST_SETUP Col 1).
+      const candidateCols = items
+        .map(function (it, idx) {
+          return { it: it, idx: idx, r: it.row || idx + 1, c: it.col || 1 };
+        })
+        .filter(function (x) {
+          return dCol > 0 ? x.c > curCol : x.c < curCol;
+        });
+
+      if (candidateCols.length > 0) {
+        candidateCols.sort(function (a, b) {
+          const colDiffA = Math.abs(a.c - curCol);
+          const colDiffB = Math.abs(b.c - curCol);
+          if (colDiffA !== colDiffB) return colDiffA - colDiffB;
+          return Math.abs(a.r - curRow) - Math.abs(b.r - curRow);
+        });
+        nextIdx = candidateCols[0].idx;
+      }
     }
 
     if (nextIdx !== -1 && nextIdx !== state.cursorIndex) {
@@ -2212,6 +2510,42 @@
       return;
     }
 
+    if (dlg.actionKind === "layer_copy" || dlg.actionKind === "layer_exchange") {
+      const srcL = String(state.params["K" + state.currentKitNo + "_layerCopySrcLayer"] || "LAYER A").slice(-1);
+      const dstL = String(state.params["K" + state.currentKitNo + "_layerCopyDstLayer"] || "LAYER C").slice(-1);
+      const padId = getCurrentPad().id;
+      const suffixes = ["Sw", "Inst", "Vol", "Tuning", "Muffling"];
+      suffixes.forEach(function (sfx) {
+        const kSrc = "K" + state.currentKitNo + "_" + padId + "_layer" + srcL + sfx;
+        const kDst = "K" + state.currentKitNo + "_" + padId + "_layer" + dstL + sfx;
+        const vSrc = state.params[kSrc];
+        const vDst = state.params[kDst];
+        if (dlg.actionKind === "layer_exchange") {
+          state.params[kSrc] = vDst;
+          state.params[kDst] = vSrc;
+        } else if (vSrc !== undefined) {
+          state.params[kDst] = vSrc;
+        }
+      });
+      saveState();
+      renderAll();
+      announce("Confirmado (OK): Complete! " + dlg.confirmMsg);
+      return;
+    }
+
+    if (dlg.actionKind === "audio_rec_cancel") {
+      saveState();
+      navigateToScreen("REC_STANDBY", false, "Confirmado (OK): Gravação de áudio descartada");
+      return;
+    }
+
+    if (dlg.actionKind === "audio_rec_save") {
+      state.params.songSource = "AUDIO REC DATA (Gravações de Áudio WAV)";
+      saveState();
+      navigateToScreen("SONG_MAIN", false, "Confirmado (OK): Gravação de áudio WAV salva no Cartão SD");
+      return;
+    }
+
     if (dlg.actionKind === "factory_reset") {
       resetAllMemory();
       return;
@@ -2234,10 +2568,13 @@
     const prevScreenId = resolveScreenId(state.currentScreenId);
     state.confirmDialog = null;
 
-    // Sincroniza flag safetyMode ao entrar ou sair de SAFETY_MODE
-    if (targetScreenId === "SAFETY_MODE") {
+    // Sincroniza flag safetyMode ao entrar ou sair de SAFETY_MODE_ACTIVE (Manual pp. 56–58)
+    if (targetScreenId === "SAFETY_MODE_ACTIVE") {
       state.safetyMode = true;
-    } else if (prevScreenId === "SAFETY_MODE" && targetScreenId === "KIT") {
+    } else if (
+      (prevScreenId === "SAFETY_MODE_EXIT_CONFIRM" || prevScreenId === "SAFETY_MODE_ACTIVE") &&
+      targetScreenId === "KIT"
+    ) {
       state.safetyMode = false;
     }
 
@@ -2351,8 +2688,18 @@
     }
 
     if (state.currentScreenId === "INST_LIST_WINDOW") {
-      const prev = state.historyStack.length > 0 ? state.historyStack.pop() : "INST_MAIN";
+      const prev = state.historyStack.length > 0 ? state.historyStack.pop() : "KIT_EDIT_INST";
       navigateToScreen(prev, false, "ENTER (Instrumento confirmado na lista)");
+      return;
+    }
+
+    if (state.currentScreenId === "REC_MODE_WINDOW") {
+      navigateToScreen("REC_STANDBY", false, "ENTER (Modo de gravação confirmado)");
+      return;
+    }
+
+    if (state.currentScreenId === "SONG_SOURCE_WINDOW" || state.currentScreenId === "SONG_FOLDER_WINDOW") {
+      navigateToScreen("SONG_MAIN", false, "ENTER (Fonte/Pasta de música confirmada)");
       return;
     }
 
@@ -2383,9 +2730,18 @@
       return;
     }
 
-    // Em SAFETY_MODE, o botão EXIT físico fica bloqueado (Manual p. 12: apenas [F6] OFF desbloqueia!)
-    if (state.currentScreenId === "SAFETY_MODE") {
-      announce("SAFETY MODE ATIVO: Os botões de navegação estão bloqueados. Pressione [F6] (Tecla 6) OFF para sair do Safety Mode.");
+    // Em SAFETY_MODE_ACTIVE, o botão EXIT físico fica bloqueado (Manual pp. 56–58: apenas [F1] EXIT ou [SHIFT]+[KIT] abre a confirmação de saída!)
+    if (resolveScreenId(state.currentScreenId) === "SAFETY_MODE_ACTIVE") {
+      announce("SAFETY MODE ATIVO: Os botões de navegação estão bloqueados. Pressione [F1] (Tecla 1 — 🔒 EXIT) ou [SHIFT] + [KIT] para abrir a confirmação de saída do Safety Mode.");
+      return;
+    }
+
+    // Na tela SET_LIST_SETUP, se o cursor estiver na Coluna 2 (STEP EDIT), EXIT retorna ao painel BANK (Coluna 1) (Manual pp. 146–147)
+    if (state.currentScreenId === "SET_LIST_SETUP" && state.cursorIndex >= 1 && !state.confirmDialog) {
+      state.cursorIndex = 0;
+      saveState();
+      renderAll();
+      announceCurrentItem("EXIT (Saiu de STEP EDIT e voltou para o painel BANK à esquerda): ");
       return;
     }
 
@@ -2454,9 +2810,399 @@
     switch (btnDef.action) {
       case "goto":
         if (btnDef.target) {
+          if (btnDef.target === "INST_LIST_WINDOW") {
+            const curIt = (screen.items || [])[state.cursorIndex];
+            if (curIt && (curIt.paramKey === "layerAInst" || curIt.paramKey === "layerBInst" || curIt.paramKey === "layerCInst" || curIt.paramKey === "xstickInst")) {
+              state.instListTargetKey = curIt.paramKey;
+            }
+          }
           navigateToScreen(btnDef.target, true, fLabel + " (" + btnDef.label + ")");
         }
         break;
+
+      case "goto_prev": {
+        const prevScr = state.historyStack.length > 0 ? state.historyStack.pop() : "KIT_EDIT_INST";
+        navigateToScreen(prevScr, false, fLabel + " (" + btnDef.label + ")");
+        break;
+      }
+
+      case "prev_inst_group":
+        stepInstGroup(-1, fLabel + " (<GROUP)");
+        break;
+
+      case "next_inst_group":
+        stepInstGroup(1, fLabel + " (GROUP>)");
+        break;
+
+      case "prev_kit":
+        stepKitSelection(-1, isShift, fLabel + " (KIT -)");
+        break;
+
+      case "next_kit":
+        stepKitSelection(1, isShift, fLabel + " (KIT +)");
+        break;
+
+      case "setlist_prev_bank":
+      case "setlist_next_bank": {
+        const dir = btnDef.action === "setlist_next_bank" ? 1 : -1;
+        const curBank = Number(state.params.setListBank || 1);
+        const nextBank = Math.max(1, Math.min(32, curBank + dir));
+        state.params.setListBank = nextBank;
+        state.params.setListStep = 1;
+        const stepKitKey = "SL_B" + nextBank + "_S1_kit";
+        const assignedKit = state.params[stepKitKey] || 1;
+        state.currentKitNo = Math.max(1, Math.min(200, Number(assignedKit)));
+        const k = getKitInfo(state.currentKitNo);
+        saveState();
+        renderAll();
+        announce(
+          fLabel +
+            " (" +
+            btnDef.label +
+            "): Set List alterado para Banco " +
+            nextBank +
+            "/32 (Step 1/32 — Drum Kit " +
+            k.code +
+            " " +
+            k.name +
+            ")."
+        );
+        break;
+      }
+
+      case "setlist_step_edit":
+        state.cursorIndex = 1;
+        saveState();
+        renderAll();
+        announceCurrentItem(fLabel + " (STEP EDIT — Foco movido para o painel direito de etapas Step/Kit): ");
+        break;
+
+      case "setlist_insert_step": {
+        const curStep = Number(state.params.setListStep || 1);
+        saveState();
+        renderAll();
+        announce(
+          fLabel +
+            " (INSERT): Nova etapa inserida/duplicada na posição Step " +
+            curStep +
+            " do Set List (etapas seguintes deslocadas para baixo)."
+        );
+        break;
+      }
+
+      case "setlist_delete_step": {
+        const curStep = Number(state.params.setListStep || 1);
+        saveState();
+        renderAll();
+        announce(
+          fLabel +
+            " (DELETE): Etapa Step " +
+            curStep +
+            " removida do Set List (etapas seguintes puxadas para cima)."
+        );
+        break;
+      }
+
+      case "snapshot_save": {
+        const kNo = state.currentKitNo;
+        const kPrefix = "K" + kNo + "_";
+        const snapCopy = {};
+        Object.keys(state.params).forEach(function (k) {
+          if (k.indexOf(kPrefix) === 0) {
+            snapCopy[k] = state.params[k];
+          }
+        });
+        state.savedKitSnapshot = {
+          kitNo: kNo,
+          name: getKitInfo(kNo).name,
+          params: snapCopy
+        };
+        saveState();
+        renderAll();
+        announce(
+          fLabel +
+            " (SAVE): Snapshot do Drum Kit " +
+            String(kNo).padStart(3, "0") +
+            " (" +
+            getKitInfo(kNo).name +
+            ") salvo na memória temporária com sucesso!"
+        );
+        break;
+      }
+
+      case "snapshot_restore": {
+        const kNo = state.currentKitNo;
+        const kPrefix = "K" + kNo + "_";
+        if (state.savedKitSnapshot && state.savedKitSnapshot.kitNo === kNo) {
+          Object.keys(state.params).forEach(function (k) {
+            if (k.indexOf(kPrefix) === 0) delete state.params[k];
+          });
+          Object.keys(state.savedKitSnapshot.params || {}).forEach(function (k) {
+            state.params[k] = state.savedKitSnapshot.params[k];
+          });
+          saveState();
+          renderAll();
+          announce(
+            fLabel +
+              " (RESTORE): Complete! O Drum Kit " +
+              String(kNo).padStart(3, "0") +
+              " foi restaurado ao estado salvo no Snapshot."
+          );
+        } else {
+          announce(
+            fLabel +
+              " (RESTORE): Restaurado o estado original de seleção do Drum Kit " +
+              String(kNo).padStart(3, "0") +
+              " (" +
+              getKitInfo(kNo).name +
+              ")."
+          );
+        }
+        break;
+      }
+
+      case "all_fx_off": {
+        const fxBackup = {};
+        (screen.items || []).forEach(function (it) {
+          const sk = getScopedParamKey(it);
+          if (sk) {
+            fxBackup[sk] = getRawItemValue(it);
+            state.params[sk] = "OFF";
+          }
+        });
+        state.fxSwUndoBackup = fxBackup;
+        saveState();
+        renderAll();
+        announce(
+          fLabel +
+            " (ALL OFF): Todos os 15 blocos de efeito do kit foram desligados (OFF). Pressione [F6] (UNDO) para restaurá-los."
+        );
+        break;
+      }
+
+      case "undo_fx_sw": {
+        const fxBackup = state.fxSwUndoBackup || state.screenEntrySnapshot || {};
+        (screen.items || []).forEach(function (it) {
+          const sk = getScopedParamKey(it);
+          if (sk && fxBackup[sk] !== undefined) {
+            state.params[sk] = fxBackup[sk];
+          }
+        });
+        saveState();
+        renderAll();
+        announce(fLabel + " (UNDO): Estado anterior das chaves de efeito (EFFECTS SW) restaurado.");
+        break;
+      }
+
+      case "layer_copy":
+      case "layer_exchange": {
+        const isEx = btnDef.action === "layer_exchange";
+        const srcP = state.params["K" + state.currentKitNo + "_layerCopySrcPad"] || "KICK";
+        const srcL = state.params["K" + state.currentKitNo + "_layerCopySrcLayer"] || "LAYER A";
+        const dstP = state.params["K" + state.currentKitNo + "_layerCopyDstPad"] || "KICK";
+        const dstL = state.params["K" + state.currentKitNo + "_layerCopyDstLayer"] || "LAYER C";
+        openConfirmationDialog(
+          {
+            label: btnDef.label,
+            opType: isEx ? "layer_exchange" : "layer_copy",
+            confirmMsg: isEx
+              ? "Camadas trocadas (" + srcP + " " + srcL + " ⇄ " + dstP + " " + dstL + ")!"
+              : "Camada copiada (" + srcP + " " + srcL + " ➔ " + dstP + " " + dstL + ")!"
+          },
+          fLabel
+        );
+        break;
+      }
+
+      case "name_toggle_case":
+      case "name_jump_num":
+      case "name_insert_space":
+      case "name_delete_char": {
+        const nameItem =
+          (screen.items || [])[state.cursorIndex] ||
+          (screen.items || []).find(function (it) { return it.type === "text_v31"; });
+        if (!nameItem) break;
+        const maxLen = nameItem.maxLen || 16;
+        const sk = getScopedParamKey(nameItem);
+        const curStr = String(getRawItemValue(nameItem) || "");
+        let padded = curStr.padEnd(maxLen, " ").slice(0, maxLen);
+        const pos = Math.max(0, Math.min(maxLen - 1, state.nameCharCursor || 0));
+
+        if (btnDef.action === "name_insert_space") {
+          padded = (padded.slice(0, pos) + " " + padded.slice(pos)).slice(0, maxLen);
+        } else if (btnDef.action === "name_delete_char") {
+          padded = (padded.slice(0, pos) + padded.slice(pos + 1) + " ").slice(0, maxLen);
+        } else if (btnDef.action === "name_jump_num") {
+          const ch = padded.charAt(pos);
+          const nextNum = ch >= "0" && ch < "9" ? String.fromCharCode(ch.charCodeAt(0) + 1) : "0";
+          padded = padded.slice(0, pos) + nextNum + padded.slice(pos + 1);
+        } else if (btnDef.action === "name_toggle_case") {
+          const ch = padded.charAt(pos);
+          let nextCh = "A";
+          if (ch >= "A" && ch <= "Z") nextCh = ch.toLowerCase();
+          else if (ch >= "a" && ch <= "z") nextCh = ch.toUpperCase();
+          else nextCh = "A";
+          padded = padded.slice(0, pos) + nextCh + padded.slice(pos + 1);
+        }
+
+        const finalStr = padded.replace(/\s+$/, "");
+        if (sk) state.params[sk] = finalStr;
+        if (nameItem.paramKey === "kitNameStr" || nameItem.paramKey === "currentKitName") {
+          state.kitNames[state.currentKitNo] = finalStr || "Init Kit";
+        } else if (nameItem.paramKey === "kitSubNameStr" || nameItem.paramKey === "currentKitSubName") {
+          state.kitSubNames[state.currentKitNo] = finalStr;
+        }
+        saveState();
+        renderAll();
+        const curChNow = padded.charAt(pos) === " " ? "Espaço" : padded.charAt(pos);
+        announce(
+          fLabel +
+            " (" +
+            btnDef.label +
+            "): " +
+            nameItem.label +
+            ' agora é "' +
+            finalStr +
+            '" (Posição ' +
+            (pos + 1) +
+            "/" +
+            maxLen +
+            ": '" +
+            curChNow +
+            "')."
+        );
+        break;
+      }
+
+      case "coach_run": {
+        if (btnDef.label === "CLEAR MAX") {
+          state.params.audMaxLimit = "OFF (Sem Limite)";
+          saveState();
+          renderAll();
+          announce(fLabel + " (CLEAR MAX): Limite máximo de andamento (Max Limit) desativado (OFF).");
+          break;
+        }
+        if (btnDef.label === "SET CURRENT TO MAX") {
+          const curBpm = Math.round(Number(state.clickTempo || 120));
+          state.params.audMaxLimit = curBpm + " BPM";
+          saveState();
+          renderAll();
+          announce(fLabel + " (SET CURRENT TO MAX): Limite máximo (Max Limit) definido para o andamento atual (" + curBpm + " BPM).");
+          break;
+        }
+        state.coachRunning = !state.coachRunning;
+        saveState();
+        renderAll();
+        announce(
+          fLabel +
+            " (" +
+            btnDef.label +
+            "): Exercício COACH " +
+            (state.coachRunning
+              ? "INICIADO (Aguardando contagem inicial para avaliação — toque nos pads!)"
+              : "PARADO (STOPPED)") +
+            "."
+        );
+        break;
+      }
+
+      case "factory_reset_exec":
+        openConfirmationDialog(
+          {
+            label: btnDef.label,
+            opType: "factory_reset",
+            confirmMsg: "Factory Reset concluído! Memória restaurada aos padrões de fábrica."
+          },
+          fLabel
+        );
+        break;
+
+      case "song_ab_or_export": {
+        const src = String(state.params.songSource || "INTERNAL");
+        if (src.indexOf("DRUM REC") !== -1) {
+          navigateToScreen("SONG_EXPORT", true, fLabel + " (EXPORT)");
+        } else {
+          const order = ["OFF", "A- (Ponto A marcado, aguardando B)", "A-B REPEAT ATIVO", "OFF"];
+          const idx = order.indexOf(state.abRepeatState);
+          state.abRepeatState = order[(idx + 1) % 3];
+          saveState();
+          renderAll();
+          announce(fLabel + " (A◄►B): Repetição de trecho A-B = " + state.abRepeatState + ".");
+        }
+        break;
+      }
+
+      case "amb_subtab": {
+        const subTab = btnDef.subTab || btnDef.label || "MAIN";
+        state.ambSubTab = subTab;
+        saveState();
+        renderAll();
+        announce(
+          fLabel +
+            " (Sub-aba " +
+            subTab +
+            " de " +
+            screen.title +
+            "): " +
+            (btnDef.description || "Sub-aba selecionada.")
+        );
+        break;
+      }
+
+      case "xtalk_focus": {
+        const curFocus = state.params.xtalkFocusSw === "ON" ? "OFF" : "ON";
+        state.params.xtalkFocusSw = curFocus;
+        saveState();
+        renderAll();
+        announce(
+          fLabel +
+            " (FOCUS [" +
+            curFocus +
+            "]): Modo Focus de Xtalk Cancel " +
+            (curFocus === "ON"
+              ? "ATIVADO (exibe apenas os pads que interferem no pad selecionado)."
+              : "DESATIVADO (exibe todos os pads na matriz).")
+        );
+        break;
+      }
+
+      case "xtalk_set": {
+        const curIt = (screen.items || [])[state.cursorIndex];
+        if (curIt && curIt.paramKey) {
+          const curV = Number(getRawItemValue(curIt)) || 0;
+          const nextV = Math.min(80, curV + 5);
+          state.params[curIt.paramKey] = nextV;
+          saveState();
+          renderAll();
+          announce(
+            fLabel +
+              " (SET): Xtalk Cancel para " +
+              curIt.label +
+              " ajustado automaticamente para " +
+              nextV +
+              " (+5 acima do limiar de diafonia)."
+          );
+        }
+        break;
+      }
+
+      case "xtalk_set_all": {
+        (screen.items || []).forEach(function (it) {
+          if (it.paramKey && it.type === "int") {
+            const curV = Number(getRawItemValue(it)) || 0;
+            state.params[it.paramKey] = Math.min(80, curV + 5);
+          }
+        });
+        saveState();
+        renderAll();
+        announce(
+          fLabel +
+            " (SET ALL): Xtalk Cancel ajustado automaticamente (+5) para todos os pads de origem em relação ao pad " +
+            getCurrentPad().id +
+            "."
+        );
+        break;
+      }
 
       case "select_bus": {
         const letters = ["A", "B", "C", "D"];
@@ -2896,6 +3642,13 @@
       }
     }
 
+    const wasPendingSync = state.drumLinkPendingSync;
+    if (state.drumLinkPendingSync) {
+      state.drumLinkPendingSync = false;
+      saveState();
+      renderAll();
+    }
+
     announce(
       "Pad percutido: " +
         pad.name +
@@ -2903,7 +3656,9 @@
         zone +
         "] — Velocity = " +
         vel +
-        ". (Em DrumLink/WT-10/DWe: configurações pendentes '*' foram sincronizadas com o pad sem fio!)"
+        (wasPendingSync
+          ? ". (Configurações DrumLink/WT-10/DWe pendentes '*' foram aplicadas e sincronizadas com o pad sem fio!)"
+          : ". (Em DrumLink/WT-10/DWe: configurações pendentes '*' foram sincronizadas com o pad sem fio!)")
     );
   }
 
@@ -3683,22 +4438,22 @@
     // Setas de Cursor [▲] [▼] [◄] [►]
     if (key === "ArrowUp") {
       ev.preventDefault();
-      moveScreenCursor(-1, 0);
+      moveScreenCursor(-1, 0, isShift);
       return;
     }
     if (key === "ArrowDown") {
       ev.preventDefault();
-      moveScreenCursor(1, 0);
+      moveScreenCursor(1, 0, isShift);
       return;
     }
     if (key === "ArrowLeft") {
       ev.preventDefault();
-      moveScreenCursor(0, -1);
+      moveScreenCursor(0, -1, isShift);
       return;
     }
     if (key === "ArrowRight") {
       ev.preventDefault();
-      moveScreenCursor(0, 1);
+      moveScreenCursor(0, 1, isShift);
       return;
     }
 
@@ -3749,11 +4504,11 @@
     // Botões dedicados do painel físico por letras
     const upper = key.toUpperCase();
 
-    // Em SAFETY_MODE (Manual p. 12), os botões de navegação de tela do painel ficam travados para evitar operação acidental no palco; apenas [F6] OFF desbloqueia!
+    // Em SAFETY_MODE_ACTIVE (Manual pp. 56–58), os botões de navegação de tela do painel ficam travados para evitar operação acidental no palco; apenas [F1] (🔒 EXIT) ou [SHIFT]+[KIT] abre a confirmação de saída!
     if (
-      state.currentScreenId === "SAFETY_MODE" &&
+      resolveScreenId(state.currentScreenId) === "SAFETY_MODE_ACTIVE" &&
       (upper === "M" ||
-        upper === "K" ||
+        (upper === "K" && !isShift) ||
         upper === "E" ||
         upper === "Z" ||
         upper === "X" ||
@@ -3764,7 +4519,7 @@
     ) {
       ev.preventDefault();
       announce(
-        "SAFETY MODE ATIVO: Os botões do painel estão travados para evitar alterações acidentais no palco. Gire o disco para trocar de Kit ou pressione [F6] (Tecla 6) OFF para desativar o Safety Mode."
+        "SAFETY MODE ATIVO: Os botões do painel estão travados para evitar alterações acidentais no palco. Gire o disco ou use [▲]/[▼] para trocar de Kit, ou pressione [F1] (Tecla 1 — 🔒 EXIT) ou [SHIFT] + [KIT] para abrir a confirmação de saída do Safety Mode."
       );
       return;
     }
@@ -3789,13 +4544,12 @@
     if (upper === "K") {
       ev.preventDefault();
       if (isShift) {
-        state.safetyMode = !state.safetyMode;
-        saveState();
-        renderAll();
+        const isCurrentlySafety =
+          resolveScreenId(state.currentScreenId) === "SAFETY_MODE_ACTIVE" || state.safetyMode;
         navigateToScreen(
-          state.safetyMode ? "SAFETY_MODE_LOCKED" : "KIT",
+          isCurrentlySafety ? "SAFETY_MODE_EXIT_CONFIRM" : "SAFETY_MODE_CONFIRM",
           true,
-          "SHIFT + KIT (Safety Mode " + (state.safetyMode ? "ON" : "OFF") + ")"
+          "SHIFT + KIT (" + (isCurrentlySafety ? "Sair do Safety Mode" : "Entrar no Safety Mode") + ")"
         );
       } else {
         navigateToScreen("KIT", true, "Botão [KIT]");
@@ -3859,26 +4613,34 @@
       if (state.currentScreenId === "REC_STANDBY") {
         state.recActive = !state.recActive;
         state.songPlaying = state.recActive;
-        const recTarget = state.params.recTargetMode || "DRUM REC (Gravação MIDI Interna)";
-        if (!state.recActive && recTarget.indexOf("AUDIO REC") === 0) {
-          saveState();
-          navigateToScreen(
-            "AUDIO_REC_PLAYBACK",
-            true,
-            "Botão [►/■] (Gravação AUDIO REC concluída e salva no SD Card)"
-          );
-          return;
+        const modeVal = String(state.params.recMode || "DRUM REC (MIDI / SMF)");
+        const isAudioRec = modeVal.indexOf("AUDIO REC") !== -1;
+        if (!state.recActive) {
+          if (isAudioRec) {
+            saveState();
+            navigateToScreen(
+              "AUDIO_REC_PLAYBACK",
+              true,
+              "Botão [►/■] (Gravação AUDIO REC concluída — abrindo AUDIO REC PLAYBACK)"
+            );
+            return;
+          } else {
+            state.params.songSource = "DRUM REC DATA (Gravações MIDI)";
+            saveState();
+            navigateToScreen(
+              "SONG_MAIN",
+              true,
+              "Botão [►/■] (Gravação DRUM REC concluída — abrindo SONG - DRUM REC DATA)"
+            );
+            return;
+          }
         }
         saveState();
         renderAll();
         announce(
           "Botão [►/■] em REC (" +
-            recTarget +
-            "): " +
-            (state.recActive
-              ? "GRAVAÇÃO EM ANDAMENTO (NOW RECORDING... Toque nos pads ou pressione Espaço novamente para parar)"
-              : "GRAVAÇÃO FINALIZADA (Pressione F6 EXPORT para exportar para o cartão SD)") +
-            "."
+            modeVal +
+            "): GRAVAÇÃO EM ANDAMENTO (RECORDING... Toque nos pads ou pressione Espaço/P novamente para finalizar a gravação)."
         );
         return;
       }
@@ -3949,8 +4711,13 @@
     const hwActions = {
       "btn-hw-kit": function (e) {
         if (e.shiftKey) {
-          state.safetyMode = !state.safetyMode;
-          navigateToScreen(state.safetyMode ? "SAFETY_MODE_LOCKED" : "KIT", true, "SHIFT+KIT");
+          const isCurrentlySafety =
+            resolveScreenId(state.currentScreenId) === "SAFETY_MODE_ACTIVE" || state.safetyMode;
+          navigateToScreen(
+            isCurrentlySafety ? "SAFETY_MODE_EXIT_CONFIRM" : "SAFETY_MODE_CONFIRM",
+            true,
+            "SHIFT+KIT"
+          );
         } else {
           navigateToScreen("KIT", true, "Botão [KIT]");
         }
@@ -4000,17 +4767,17 @@
         renderAll();
         announce(state.songPlaying ? "PLAYING" : "STOPPED");
       },
-      "btn-hw-up": function () {
-        moveScreenCursor(-1, 0);
+      "btn-hw-up": function (e) {
+        moveScreenCursor(-1, 0, e && e.shiftKey);
       },
-      "btn-hw-down": function () {
-        moveScreenCursor(1, 0);
+      "btn-hw-down": function (e) {
+        moveScreenCursor(1, 0, e && e.shiftKey);
       },
-      "btn-hw-left": function () {
-        moveScreenCursor(0, -1);
+      "btn-hw-left": function (e) {
+        moveScreenCursor(0, -1, e && e.shiftKey);
       },
-      "btn-hw-right": function () {
-        moveScreenCursor(0, 1);
+      "btn-hw-right": function (e) {
+        moveScreenCursor(0, 1, e && e.shiftKey);
       },
       "btn-hw-enter": function () {
         handleEnterButton();

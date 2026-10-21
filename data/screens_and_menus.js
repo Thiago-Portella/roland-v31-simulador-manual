@@ -1,20 +1,4 @@
-/**
- * ============================================================================
- * ROLAND V31 (TD-316) — ÁRVORE DE TELAS, MENUS, CURSORES E BOTÕES F1–F6
- * ============================================================================
- * Exporta `window.V31_SCREENS` (Mapa indexado por ID da tela, ex: "KIT", "MENU").
- * Estrutura de cada tela:
- * - `id`: Código único da tela (usado no roteamento `?screen=` e em `state.currentScreenId`)
- * - `title`: Nome exibido no cabeçalho do visor LCD e anunciada ao leitor de telas
- * - `manualSectionId`: ID da seção correspondente em `window.V31_MANUAL_SECTIONS`
- * - `category`: Agrupamento funcional (ex: "Menu Principal", "KIT EDIT", "SYSTEM")
- * - `accessPath`: Caminho físico e atalhos para chegar à tela
- * - `visualDescription`: Descrição detalhada da geometria da tela e navegação por setas
- * - `fButtons`: Array de 6 objetos (`num: 1..6`, `label`, `action`, `target`, `description`)
- * - `items`: Lista de campos/parâmetros interativos com coordenadas (`row`, `col`),
- *            tipo (`select`, `range`, `action`, `toggle`), valores e descrição acessível.
- * ============================================================================
- */
+// Mapeamento completo de todas as telas, menus, grades, cursores e botões F1-F6 do módulo Roland V31 (TD-316)
 window.V31_SCREENS = {
   MENU: {
     id: "MENU",
@@ -161,8 +145,7 @@ Object.assign(window.V31_SCREENS, {
       { key: "SHIFT + KIT", action: "goto", target: "SAFETY_MODE_CONFIRM", description: "Atalho direto para ativar o Modo de Segurança (Safety Mode) sem passar por TOOLS." }
     ],
     items: [
-      { id: "kitNumber", label: "Drum Kit Selecionado", type: "kit_selector", min: 1, max: 200, row: 1, col: 1, explanation: "Use o Disco [+]/[-] ou Setas Cima/Baixo [▲]/[▼] para trocar entre os 200 Drum Kits." },
-      { id: "kitPageView", label: "Visualização da Tela KIT (Páginas 1 a 3)", type: "enum", options: ["1: Número e Nome do Kit", "2: Medidores de Saída MASTER e PHONES", "3: Medidor de Velocity e Gráfico de Pads"], paramKey: "kitScreenPage", row: 1, col: 2, explanation: "Use Seta Esquerda [◄] e Seta Direita [►] na tela KIT para alternar entre as 3 páginas visuais." }
+      { id: "kitNumber", label: "Drum Kit Selecionado", type: "kit_selector", min: 1, max: 200, row: 1, col: 1, explanation: "Use o Disco [+]/[-] ou Setas Cima/Baixo [▲]/[▼] para trocar entre os 200 Drum Kits. Use Seta Esquerda [◄] e Seta Direita [►] para alternar entre as 3 páginas visuais (● ○ ○)." }
     ]
   },
 
@@ -464,8 +447,7 @@ Object.assign(window.V31_SCREENS, {
       { num: 6, label: "Analog XStick", action: "toggle_param", paramKey: "analogXStick", description: "Liga/desliga Cross Stick analógico." }
     ],
     items: [
-      { id: "setlistStep", label: "Etapa Atual do Set List (Step)", paramKey: "setListStep", type: "int", min: 1, max: 32, defaultVal: 1, row: 1, col: 1, explanation: "Gire o Disco [+]/[-] para avançar ou voltar pelas etapas (Steps 1 a 32) da Set List." },
-      { id: "setlistBank", label: "Banco de Set List (1 a 32)", paramKey: "setListBank", type: "int", min: 1, max: 32, defaultVal: 1, row: 2, col: 1, explanation: "Use [F2] (<BANK) e [F3] (BANK>) para escolher entre os 32 bancos de Set List." }
+      { id: "setlistStep", label: "Etapa Atual do Set List (Step)", paramKey: "setListStep", type: "int", min: 1, max: 32, defaultVal: 1, row: 1, col: 1, explanation: "Gire o Disco [+]/[-] ou use [▲]/[▼] para avançar ou voltar pelas etapas (Steps 1 a 32) da Set List. Use [F2] (<BANK) e [F3] (BANK>) para trocar entre os 32 bancos, e [◄]/[►] para alternar as 3 páginas visuais." }
     ]
   },
 
@@ -476,24 +458,24 @@ Object.assign(window.V31_SCREENS, {
     category: "Utilitários / Performance",
     accessPath: "Na tela SET LIST, pressione [F5] (SETUP).",
     visualDescription:
-      "Tela dividida em 2 painéis: " +
-      "Painel esquerdo (BANK): Lista dos 32 bancos (1 Standard, 2 Rock/Metal, 3 Jazz, 4 Electronic, 5 Percussion, 6 a 32 Set List 06..32). " +
-      "Painel direito (Step / Kit): Lista das 32 etapas (Step 1 a Step 32) do banco selecionado e qual Drum Kit (001 a 200) está atribuído a cada etapa. " +
-      "Quando o cursor está no painel BANK: pressione [F2] (NAME) para renomear o banco, ou [F3] (STEP EDIT) (ou Seta Direita [►]) para editar as etapas. " +
-      "Durante a edição de etapas (STEP EDIT): use [▲]/[▼] para escolher o Step, gire o Disco [+]/[-] para escolher o Drum Kit daquela etapa, pressione [F5] (INSERT) para duplicar/inserir uma etapa ou [F6] (DELETE) para excluir a etapa.",
-    layoutType: "list",
+      "Tela dividida em 2 painéis (Manual p. 146–147): " +
+      "Painel esquerdo (BANK — Coluna 1): Lista dos 32 bancos (1 Standard, 2 Rock/Metal, 3 Jazz, 4 Electronic, 5 Percussion, 6 a 32 Set List 06..32). " +
+      "Painel direito (Step / Kit — Coluna 2): Lista das 32 etapas (Step 1 a Step 32) do banco selecionado e qual Drum Kit (001 a 200) está atribuído a cada etapa. " +
+      "Quando o cursor está no painel BANK (Coluna 1): pressione [F2] (NAME) para renomear o banco, ou pressione [F3] (STEP EDIT) (ou Seta Direita [►]) para entrar na edição de etapas. " +
+      "Durante a edição de etapas (STEP EDIT — Coluna 2): use [▲]/[▼] para escolher o Step (Linha 1) ou o Drum Kit atribuído (Linha 2), gire o Disco [+]/[-] para alterar, pressione [F5] (INSERT) para duplicar/inserir uma etapa ou [F6] (DELETE) para excluir a etapa. Pressione [EXIT] ou [◄] para voltar ao painel BANK.",
+    layoutType: "grid",
     fButtons: [
       { num: 1, label: "---", action: "none", description: "Sem função." },
       { num: 2, label: "NAME", action: "goto", target: "KIT_NAME", description: "Edita o nome do banco de Set List selecionado (até 16 caracteres)." },
-      { num: 3, label: "STEP EDIT", action: "announce", message: "Modo STEP EDIT ativo: selecione a etapa e gire o Disco para definir o Drum Kit. Use F5 (INSERT) para inserir etapa e F6 (DELETE) para remover etapa.", description: "Ativa a edição das 32 etapas do banco atual." },
+      { num: 3, label: "STEP EDIT", action: "setlist_step_edit", description: "Move o foco para o painel direito para editar as 32 etapas (Steps) do banco atual." },
       { num: 4, label: "---", action: "none", description: "Sem função." },
-      { num: 5, label: "INSERT", action: "setlist_insert_step", description: "No modo STEP EDIT, insere uma nova etapa na posição do cursor empurrando as seguintes para baixo." },
+      { num: 5, label: "INSERT", action: "setlist_insert_step", description: "No modo STEP EDIT, insere/duplica uma etapa na posição do cursor empurrando as seguintes para baixo." },
       { num: 6, label: "DELETE", action: "setlist_delete_step", description: "No modo STEP EDIT, exclui a etapa na posição do cursor puxando as seguintes para cima." }
     ],
     items: [
-      { id: "sls_bank", label: "Banco Selecionado (BANK 1–32)", paramKey: "setListBank", type: "enum", options: ["1: Standard", "2: Rock/Metal", "3: Jazz", "4: Electronic", "5: Percussion", "6: Set List 06", "7: Set List 07", "8: Set List 08", "9: Set List 09", "10: Set List 10"], defaultVal: "1: Standard", row: 1, col: 1, explanation: "Selecione qual dos 32 bancos deseja editar." },
-      { id: "sls_step", label: "Etapa para Editar (Step 1–32)", paramKey: "setListStep", type: "int", min: 1, max: 32, defaultVal: 1, row: 1, col: 2, explanation: "Selecione a etapa (Step 1 a 32) dentro do banco." },
-      { id: "sls_kit", label: "Drum Kit Atribuído à Etapa", paramKey: "setListStepKit", type: "kit_selector", min: 1, max: 200, defaultVal: 1, row: 2, col: 2, explanation: "Escolha qual Drum Kit (001 a 200) será chamado nesta etapa da Set List." }
+      { id: "sls_bank", label: "BANK (Banco Selecionado 1–32)", paramKey: "setListBank", type: "int", min: 1, max: 32, defaultVal: 1, row: 1, col: 1, explanation: "Painel esquerdo (Coluna 1): escolha qual dos 32 bancos deseja configurar com o Disco [+]/[-]. Pressione [F2] (NAME) para renomear o banco ou [F3] (STEP EDIT) / [►] para editar os Steps." },
+      { id: "sls_step", label: "STEP EDIT: Etapa Selecionada (Step 1–32)", paramKey: "setListStep", type: "int", min: 1, max: 32, defaultVal: 1, row: 1, col: 2, explanation: "Painel direito (Coluna 2, Linha 1): selecione a etapa (Step 1 a 32) dentro do banco. Use [F5] (INSERT) para inserir etapa ou [F6] (DELETE) para remover." },
+      { id: "sls_kit", label: "STEP EDIT: Drum Kit da Etapa (001–200)", paramKey: "setListStepKit", type: "kit_selector", min: 1, max: 200, defaultVal: 1, row: 2, col: 2, explanation: "Painel direito (Coluna 2, Linha 2 — 1 seta para baixo): gire o Disco [+]/[-] para escolher qual Drum Kit (001 a 200) será chamado nesta etapa da Set List." }
     ]
   },
 
@@ -505,14 +487,18 @@ Object.assign(window.V31_SCREENS, {
     category: "EZ EDIT",
     accessPath: "Pressione o botão físico [EZ EDIT] (atalho: tecla E ou Z) e depois [F1] (INST).",
     visualDescription:
-      "A tela EZ EDIT - INSTRUMENT ajusta automaticamente o aro do pad para acompanhar a pele. " +
-      "No lado esquerdo há 3 linhas correspondentes às 3 camadas do pad atual (Linha 1: Camada A, Linha 2: Camada B, Linha 3: Camada C). " +
-      "Cada linha possui 2 colunas: Coluna 1 = Interruptor da camada (ON/OFF), Coluna 2 = Instrumento atribuído (ex: '021 Mx VT Maple 3 K'). " +
+      "A tela EZ EDIT - INSTRUMENT (Manual p. 69) ajusta automaticamente o aro do pad para acompanhar a pele. " +
+      "No lado esquerdo há uma lista vertical de 3 linhas (1 coluna) correspondentes aos instrumentos das 3 camadas do pad atual: " +
+      "Linha 1: Camada A (ex: 'KICK | PRESET | 021 Mx VT Maple 3 K'). " +
+      "Linha 2: Camada B (1 seta para baixo [▼], ex: 'KICK | PRESET | 020 Mx VT Maple 2 K'). " +
+      "Linha 3: Camada C (2 setas para baixo [▼], ex: 'OFF | --- | 000 OFF'). " +
+      "Nota: Diferente de MENU > KIT EDIT > INSTRUMENT, na tela EZ EDIT - INSTRUMENT há apenas 1 coluna por camada (o instrumento em si, sem chaves ON/OFF ou faders de volume laterais). " +
+      "Use Seta Cima [▲] / Seta Baixo [▼] para escolher a Camada A, B ou C e gire o Disco [+]/[-] para trocar o instrumento (ou pressione [ENTER] / [F5] LIST para abrir a janela INST LIST por grupos). " +
       "No lado direito aparece o desenho do kit destacando o pad selecionado (use Ctrl+Esquerda/Direita para trocar de pad). " +
-      "No rodapé: [F1] INST, [F2] TUNING, [F3] MUFFLING, [F4] VOLUME, [F5] LIST (abre a lista completa de instrumentos por grupo), [F6] UNDO (desfaz alterações feitas desde que entrou na tela).",
-    layoutType: "grid",
+      "No rodapé: [F1] INST, [F2] TUNING, [F3] MUFFLING, [F4] VOLUME, [F5] LIST, [F6] UNDO.",
+    layoutType: "list",
     fButtons: [
-      { num: 1, label: "INST", action: "goto", target: "EZ_EDIT_INST", description: "Aba atual: seleção de instrumentos das camadas A, B e C." },
+      { num: 1, label: "INST", action: "goto", target: "EZ_EDIT_INST", description: "Aba atual: seleção rápida de instrumentos das camadas A, B e C." },
       { num: 2, label: "TUNING", action: "goto", target: "EZ_EDIT_TUNING", description: "Muda para a aba TUNING (afinação/tamanho das camadas A, B e C)." },
       { num: 3, label: "MUFFLING", action: "goto", target: "EZ_EDIT_MUFFLING", description: "Muda para a aba MUFFLING (abafamento/decay das camadas A, B e C)." },
       { num: 4, label: "VOLUME", action: "goto", target: "EZ_EDIT_VOLUME", description: "Muda para a aba VOLUME (volume de cada camada e volume geral do pad)." },
@@ -520,12 +506,9 @@ Object.assign(window.V31_SCREENS, {
       { num: 6, label: "UNDO", action: "undo_screen", description: "Reverte para as configurações de quando a tela foi acessada pela primeira vez." }
     ],
     items: [
-      { id: "ez_layerA_sw", label: "Camada A - Interruptor (Layer Switch)", paramKey: "layerASw", type: "enum", options: ["OFF", "ON"], defaultVal: "ON", row: 1, col: 1, explanation: "Liga (ON) ou desliga (OFF) a Camada A do pad atual." },
-      { id: "ez_layerA_inst", label: "Camada A - Instrumento", paramKey: "layerAInst", type: "instrument", defaultVal: "021 Mx VT Maple 3 K", row: 1, col: 2, explanation: "Seleciona o instrumento da Camada A (1 seta à direita a partir da chave A). Pressione [ENTER] ou [F5] para abrir a lista por grupos." },
-      { id: "ez_layerB_sw", label: "Camada B - Interruptor (Layer Switch)", paramKey: "layerBSw", type: "enum", options: ["OFF", "ON"], defaultVal: "ON", row: 2, col: 1, explanation: "Liga (ON) ou desliga (OFF) a Camada B do pad atual (1 seta para baixo)." },
-      { id: "ez_layerB_inst", label: "Camada B - Instrumento", paramKey: "layerBInst", type: "instrument", defaultVal: "020 Mx VT Maple 2 K", row: 2, col: 2, explanation: "Seleciona o instrumento da Camada B." },
-      { id: "ez_layerC_sw", label: "Camada C - Interruptor (Layer Switch)", paramKey: "layerCSw", type: "enum", options: ["OFF", "ON"], defaultVal: "OFF", row: 3, col: 1, explanation: "Liga (ON) ou desliga (OFF) a Camada C do pad atual (2 setas para baixo)." },
-      { id: "ez_layerC_inst", label: "Camada C - Instrumento", paramKey: "layerCInst", type: "instrument", defaultVal: "000 OFF", row: 3, col: 2, explanation: "Seleciona o instrumento da Camada C." }
+      { id: "ez_layerA_inst", label: "Camada A - Instrumento", paramKey: "layerAInst", type: "instrument", defaultVal: "021 Mx VT Maple 3 K", row: 1, col: 1, explanation: "Linha 1 (posição inicial): Seleciona o instrumento da Camada A com o Disco [+]/[-]. Pressione [ENTER] ou [F5] (LIST) para abrir a lista por grupos." },
+      { id: "ez_layerB_inst", label: "Camada B - Instrumento", paramKey: "layerBInst", type: "instrument", defaultVal: "020 Mx VT Maple 2 K", row: 2, col: 1, explanation: "Linha 2 (1 seta para baixo [▼]): Seleciona o instrumento da Camada B. Pressione [ENTER] ou [F5] (LIST) para abrir a lista por grupos." },
+      { id: "ez_layerC_inst", label: "Camada C - Instrumento", paramKey: "layerCInst", type: "instrument", defaultVal: "000 OFF", row: 3, col: 1, explanation: "Linha 3 (2 setas para baixo [▼]): Seleciona o instrumento da Camada C. Pressione [ENTER] ou [F5] (LIST) para abrir a lista por grupos." }
     ]
   },
 
@@ -755,7 +738,11 @@ Object.assign(window.V31_SCREENS, {
       { num: 6, label: "H&R (ON/OFF)", action: "toggle_param", paramKey: "hrLinkSw", description: "Vincula edição de Pele (Head) e Aro (Rim)." }
     ],
     shiftFButtons: [
-      { num: 4, label: "RESET V-EDIT", action: "reset_section", description: "[SHIFT]+[F4]: Restaura os parâmetros V-EDIT da camada selecionada aos valores padrão." }
+      { num: 1, label: "Layer A ON/OFF", action: "toggle_param", paramKey: "layerASw", description: "[SHIFT]+[F1]: Ativa/desativa a Camada A." },
+      { num: 2, label: "Layer B ON/OFF", action: "toggle_param", paramKey: "layerBSw", description: "[SHIFT]+[F2]: Ativa/desativa a Camada B." },
+      { num: 3, label: "Layer C ON/OFF", action: "toggle_param", paramKey: "layerCSw", description: "[SHIFT]+[F3]: Ativa/desativa a Camada C." },
+      { num: 4, label: "RESET V-EDIT", action: "reset_section", description: "[SHIFT]+[F4]: Restaura os parâmetros V-EDIT da camada selecionada aos valores padrão." },
+      { num: 6, label: "LAYER COPY", action: "goto", target: "LAYER_COPY_WINDOW", description: "[SHIFT]+[F6]: Abre a janela LAYER COPY." }
     ],
     items: [
       { id: "ve_tuning", label: "Tuning (Afinação da Pele / Prato Size)", paramKey: "veditTuning", type: "int", min: -100, max: 100, defaultVal: 3, row: 1, col: 1, explanation: "Linha 1, Coluna 1: Afinação da pele (-100 a +100) para KICK/SNARE/TOM, ou diâmetro Size (1.0–40.0 pol.) para HI-HAT/CYMBAL." },
@@ -799,7 +786,11 @@ Object.assign(window.V31_SCREENS, {
       { num: 6, label: "H&R (ON/OFF)", action: "toggle_param", paramKey: "hrLinkSw", description: "Vincula Pele e Aro." }
     ],
     shiftFButtons: [
-      { num: 4, label: "Transient ON/OFF", action: "toggle_param", paramKey: "layerTransientSw", description: "[SHIFT]+[F4]: Liga/desliga o efeito Transient da camada atual." }
+      { num: 1, label: "Layer A ON/OFF", action: "toggle_param", paramKey: "layerASw", description: "[SHIFT]+[F1]: Ativa/desativa a Camada A." },
+      { num: 2, label: "Layer B ON/OFF", action: "toggle_param", paramKey: "layerBSw", description: "[SHIFT]+[F2]: Ativa/desativa a Camada B." },
+      { num: 3, label: "Layer C ON/OFF", action: "toggle_param", paramKey: "layerCSw", description: "[SHIFT]+[F3]: Ativa/desativa a Camada C." },
+      { num: 4, label: "Transient ON/OFF", action: "toggle_param", paramKey: "layerTransientSw", description: "[SHIFT]+[F4]: Liga/desliga o efeito Transient da camada atual." },
+      { num: 6, label: "LAYER COPY", action: "goto", target: "LAYER_COPY_WINDOW", description: "[SHIFT]+[F6]: Abre a janela LAYER COPY." }
     ],
     items: [
       { id: "tr_sw", label: "1. Transient Switch", paramKey: "layerTransientSw", type: "enum", options: ["OFF", "ON"], defaultVal: "ON", row: 1, col: 1, explanation: "Liga (ON) ou desliga (OFF) o efeito de transiente da camada (Linha 1 — posição inicial)." },
@@ -836,7 +827,12 @@ Object.assign(window.V31_SCREENS, {
       { num: 6, label: "H&R (ON/OFF)", action: "toggle_param", paramKey: "hrLinkSw", description: "Vincula Pele e Aro." }
     ],
     shiftFButtons: [
-      { num: 4, label: "EQ ON/OFF", action: "toggle_param", paramKey: "layerEqSw", description: "[SHIFT]+[F4]: Liga/desliga o equalizador da camada selecionada." }
+      { num: 1, label: "Layer A ON/OFF", action: "toggle_param", paramKey: "layerASw", description: "[SHIFT]+[F1]: Ativa/desativa a Camada A." },
+      { num: 2, label: "Layer B ON/OFF", action: "toggle_param", paramKey: "layerBSw", description: "[SHIFT]+[F2]: Ativa/desativa a Camada B." },
+      { num: 3, label: "Layer C ON/OFF", action: "toggle_param", paramKey: "layerCSw", description: "[SHIFT]+[F3]: Ativa/desativa a Camada C." },
+      { num: 4, label: "EQ ON/OFF", action: "toggle_param", paramKey: "layerEqSw", description: "[SHIFT]+[F4]: Liga/desliga o equalizador da camada selecionada." },
+      { num: 5, label: "RESET EQ", action: "reset_section", description: "[SHIFT]+[F5]: Restaura o equalizador da camada selecionada para os valores padrão." },
+      { num: 6, label: "LAYER COPY", action: "goto", target: "LAYER_COPY_WINDOW", description: "[SHIFT]+[F6]: Abre a janela LAYER COPY." }
     ],
     items: [
       { id: "leq_sw", label: "EQ Switch (Liga/Desliga EQ da Camada)", paramKey: "layerEqSw", type: "enum", options: ["OFF", "ON"], defaultVal: "ON", row: 1, col: 1, explanation: "Liga (ON) ou desliga (OFF) o equalizador da camada atual." },
@@ -870,6 +866,12 @@ Object.assign(window.V31_SCREENS, {
       { num: 4, label: "EQ", action: "goto", target: "KIT_EDIT_EQ", description: "Muda para a aba EQ." },
       { num: 5, label: "LAYER MODE", action: "goto", target: "KIT_EDIT_LAYER_MODE", description: "Aba atual: LAYER MODE." },
       { num: 6, label: "H&R (ON/OFF)", action: "toggle_param", paramKey: "hrLinkSw", description: "Vincula Pele e Aro." }
+    ],
+    shiftFButtons: [
+      { num: 1, label: "Layer A ON/OFF", action: "toggle_param", paramKey: "layerASw", description: "[SHIFT]+[F1]: Ativa/desativa a Camada A." },
+      { num: 2, label: "Layer B ON/OFF", action: "toggle_param", paramKey: "layerBSw", description: "[SHIFT]+[F2]: Ativa/desativa a Camada B." },
+      { num: 3, label: "Layer C ON/OFF", action: "toggle_param", paramKey: "layerCSw", description: "[SHIFT]+[F3]: Ativa/desativa a Camada C." },
+      { num: 6, label: "LAYER COPY", action: "goto", target: "LAYER_COPY_WINDOW", description: "[SHIFT]+[F6]: Abre a janela LAYER COPY." }
     ],
     items: [
       { id: "lm_mode", label: "Layer Mode", paramKey: "layerMode", type: "enum", options: ["MIX", "VELOCITY", "HI-HAT"], defaultVal: "VELOCITY", row: 1, col: 1, explanation: "Modo de reprodução das camadas: MIX (sobrepostas), VELOCITY (por força da batida) ou HI-HAT (A=aberto, B=fechado, C=pedal)." },
@@ -1209,10 +1211,10 @@ Object.assign(window.V31_SCREENS, {
       "[F5] (OH) liga/desliga o efeito Overhead; [F6] (OHOnly) isola o áudio apenas do Overhead.",
     layoutType: "grid",
     fButtons: [
-      { num: 1, label: "SEND", action: "announce", message: "Aba SEND do OVERHEAD: ajuste o Overhead Send Level (-INF a +6.0dB) de cada pad.", description: "Ajusta o nível de envio de cada pad para o Overhead." },
-      { num: 2, label: "FILTER", action: "announce", message: "Aba FILTER do OVERHEAD: configura os filtros 1 a 6 (Pre Filter: THRU, HICUT, LOCUT, PKG; Post Filter: THRU, LPF, HPF, LSF, HSF).", description: "Configura os 6 filtros em série de entrada do Overhead." },
-      { num: 3, label: "ASSIGN", action: "announce", message: "Aba ASSIGN do OVERHEAD: escolhe BYPASS ou FILTER 1 a 6 para cada pad.", description: "Seleciona qual filtro de entrada cada pad utiliza." },
-      { num: 4, label: "OVERHEAD", action: "goto", target: "AMB_OVERHEAD", description: "Aba principal OVERHEAD (PRE TRNSNT, PRE COMP, MIC, POST EQ, POST COMP, BUS SEND)." },
+      { num: 1, label: "SEND", action: "amb_subtab", paramKey: "ohStage", val: "Aba SEND (Envio por Pad)", description: "Ajusta o nível de envio de cada pad para o Overhead (-INF a +6.0 dB)." },
+      { num: 2, label: "FILTER", action: "amb_subtab", paramKey: "ohStage", val: "Aba FILTER (Filtros 1-6)", description: "Configura os 6 filtros em série (Pre/Post Filter) de entrada do Overhead." },
+      { num: 3, label: "ASSIGN", action: "amb_subtab", paramKey: "ohStage", val: "Aba ASSIGN (Atribuição de Filtro)", description: "Seleciona qual filtro de entrada (BYPASS ou FILTER 1 a 6) cada pad utiliza." },
+      { num: 4, label: "OVERHEAD", action: "amb_subtab", paramKey: "ohStage", val: "3: MIC (Principal)", description: "Aba principal OVERHEAD (PRE TRNSNT, PRE COMP, MIC, POST EQ, POST COMP, BUS SEND)." },
       { num: 5, label: "OH (ON/OFF)", action: "toggle_param", paramKey: "ohSw", description: "Liga (ON) ou desliga (OFF) o efeito Overhead." },
       { num: 6, label: "OHOnly (ON/OFF)", action: "toggle_param", paramKey: "ohOnlySw", description: "Permite ouvir temporariamente apenas o som do Overhead." }
     ],
@@ -1240,15 +1242,15 @@ Object.assign(window.V31_SCREENS, {
       "[F5] (Room) liga/desliga a sala; [F6] (RoomOnly) isola apenas o som da sala.",
     layoutType: "grid",
     fButtons: [
-      { num: 1, label: "SEND", action: "announce", message: "Aba SEND do ROOM: ajusta Room Send Level (-INF a +6.0dB) para cada pad.", description: "Ajusta o envio de cada pad para a sala." },
-      { num: 2, label: "ROOM", action: "goto", target: "AMB_ROOM", description: "Aba principal de parâmetros da sala ROOM." },
+      { num: 1, label: "SEND", action: "amb_subtab", paramKey: "roomStage", val: "Aba SEND (Envio por Pad)", description: "Ajusta o envio de cada pad para a sala ROOM." },
+      { num: 2, label: "ROOM", action: "amb_subtab", paramKey: "roomStage", val: "4: ROOM (Principal)", description: "Aba principal de parâmetros da sala ROOM." },
       { num: 3, label: "---", action: "none", description: "Em PRE TRANSIENT controla Transient ON/OFF; em POST EQ controla Room ON/OFF." },
       { num: 4, label: "H&R / EQ / Comp", action: "toggle_param", paramKey: "hrLinkSw", description: "Alterna H&R (na aba SEND) ou liga/desliga EQ/Comp nos estágios internos." },
       { num: 5, label: "Room (ON/OFF)", action: "toggle_param", paramKey: "roomSw", description: "Liga (ON) ou desliga (OFF) o efeito ROOM." },
       { num: 6, label: "RoomOnly (ON/OFF)", action: "toggle_param", paramKey: "roomOnlySw", description: "Isola temporariamente apenas o som da sala ROOM." }
     ],
     items: [
-      { id: "rm_stage", label: "Estágio da Cadeia ROOM", paramKey: "roomStage", type: "enum", options: ["1: PRE EQ", "2: PRE TRNSNT", "3: PRE COMP", "4: ROOM (Principal)", "5: POST EQ", "6: POST COMP", "7: BUS SEND"], defaultVal: "4: ROOM (Principal)", row: 1, col: 1, explanation: "Seleciona o bloco da cadeia ROOM." },
+      { id: "rm_stage", label: "Estágio da Cadeia ROOM", paramKey: "roomStage", type: "enum", options: ["1: PRE EQ", "2: PRE TRNSNT", "3: PRE COMP", "4: ROOM (Principal)", "5: POST EQ", "6: POST COMP", "7: BUS SEND", "Aba SEND (Envio por Pad)"], defaultVal: "4: ROOM (Principal)", row: 1, col: 1, explanation: "Seleciona o bloco da cadeia ROOM." },
       { id: "rm_type", label: "Type (Tipo de Simulação de Sala)", paramKey: "roomType", type: "enum", options: ["REALISTIC", "SYNTHETIC"], defaultVal: "REALISTIC", row: 2, col: 1, explanation: "REALISTIC (modelagem acústica de locais reais) ou SYNTHETIC (reverb de sala sintético com Gate)." },
       { id: "rm_level", label: "Room Level", paramKey: "roomLevel", type: "db", min: -61, max: 12, step: 0.5, defaultVal: -2.0, row: 2, col: 2, explanation: "Volume da sala ROOM (-INF a +12.0 dB)." },
       { id: "rm_width", label: "Output Width", paramKey: "roomWidth", type: "enum", options: ["DEFAULT", "WIDE+1", "WIDE+2", "WIDE+3", "WIDE+4", "WIDE+5", "WIDE+6"], defaultVal: "DEFAULT", row: 3, col: 1, explanation: "Espacialidade do som da sala (DEFAULT a WIDE+6)." },
@@ -1271,15 +1273,15 @@ Object.assign(window.V31_SCREENS, {
       "[F5] (Reverb) liga/desliga o reverb; [F6] (RevOnly) ouve apenas o reverb.",
     layoutType: "grid",
     fButtons: [
-      { num: 1, label: "SEND", action: "announce", message: "Aba SEND do REVERB: ajusta Reverb Send Level (-INF a +6.0dB) para cada pad.", description: "Ajusta o envio de cada pad para o Reverb." },
-      { num: 2, label: "REVERB", action: "goto", target: "AMB_REVERB", description: "Aba principal de parâmetros do REVERB." },
+      { num: 1, label: "SEND", action: "amb_subtab", paramKey: "reverbStage", val: "Aba SEND (Envio por Pad)", description: "Ajusta o envio de cada pad para o Reverb." },
+      { num: 2, label: "REVERB", action: "amb_subtab", paramKey: "reverbStage", val: "2: REVERB (Principal)", description: "Aba principal de parâmetros do REVERB." },
       { num: 3, label: "---", action: "none", description: "Sem função." },
       { num: 4, label: "H&R / Transient", action: "toggle_param", paramKey: "hrLinkSw", description: "Controla H&R na aba SEND ou Transient/Reverb nos estágios." },
       { num: 5, label: "Reverb (ON/OFF)", action: "toggle_param", paramKey: "reverbSw", description: "Liga (ON) ou desliga (OFF) o Reverb." },
       { num: 6, label: "RevOnly (ON/OFF)", action: "toggle_param", paramKey: "revOnlySw", description: "Isola temporariamente apenas o som do Reverb." }
     ],
     items: [
-      { id: "rv_stage", label: "Estágio da Cadeia REVERB", paramKey: "reverbStage", type: "enum", options: ["1: PRE TRANSIENT", "2: REVERB (Principal)", "3: POST COMP", "4: BUS SEND"], defaultVal: "2: REVERB (Principal)", row: 1, col: 1, explanation: "Seleciona o bloco da cadeia REVERB." },
+      { id: "rv_stage", label: "Estágio da Cadeia REVERB", paramKey: "reverbStage", type: "enum", options: ["1: PRE TRANSIENT", "2: REVERB (Principal)", "3: POST COMP", "4: BUS SEND", "Aba SEND (Envio por Pad)"], defaultVal: "2: REVERB (Principal)", row: 1, col: 1, explanation: "Seleciona o bloco da cadeia REVERB." },
       { id: "rv_alg", label: "Reverb Type (Algoritmo Principal)", paramKey: "reverbAlg", type: "enum", options: ["TD-50 REVERB", "TD-50 ROOM", "WARM HALL", "SRV-2000", "SRV-2000(NLR)", "SIMPLE REVERB", "LONG REVERB"], defaultVal: "TD-50 REVERB", row: 2, col: 1, explanation: "Escolhe entre os 7 algoritmos de Reverb (Data List p. 21–24)." },
       { id: "rv_level", label: "Reverb Level", paramKey: "reverbLevel", type: "db", min: -61, max: 12, step: 0.5, defaultVal: 0.0, row: 2, col: 2, explanation: "Volume de saída do Reverb (-INF a +12.0 dB)." },
       { id: "rv_subtype", label: "Sub-Type / Selection / Room Type", paramKey: "reverbSubType", type: "enum", options: ["ROOM1", "ROOM2", "HALL1", "HALL2", "PLATE", "STUDIO (TD-50 ROOM)", "JAZZ CLUB (TD-50 ROOM)", "ROCK CLUB (TD-50 ROOM)", "CONCERT HALL (TD-50 ROOM)", "SRV R22", "SRV H26", "SRV P-B", "SRV P-A"], defaultVal: "ROOM1", row: 3, col: 1, explanation: "Subtipo do algoritmo selecionado." },
@@ -1304,15 +1306,15 @@ Object.assign(window.V31_SCREENS, {
       "[F5] (Reso) liga/desliga; [F6] (ResoOnly) escuta apenas a ressonância do kit.",
     layoutType: "grid",
     fButtons: [
-      { num: 1, label: "SEND", action: "announce", message: "Aba SEND de KIT RESONANCE: ajusta Kit Resonance Send Level (-INF a +6.0dB) para cada pad.", description: "Ajusta o envio de cada pad para Kit Resonance." },
-      { num: 2, label: "KIT RESO", action: "goto", target: "AMB_KIT_RESO", description: "Aba principal KIT RESONANCE." },
+      { num: 1, label: "SEND", action: "amb_subtab", paramKey: "kitResoStage", val: "Aba SEND (Envio por Pad)", description: "Ajusta o envio de cada pad para Kit Resonance." },
+      { num: 2, label: "KIT RESO", action: "amb_subtab", paramKey: "kitResoStage", val: "3: KIT RESO (Principal)", description: "Aba principal KIT RESONANCE." },
       { num: 3, label: "---", action: "none", description: "Sem função." },
       { num: 4, label: "H&R / Transient", action: "toggle_param", paramKey: "hrLinkSw", description: "Controla H&R na aba SEND ou Transient/EQ nos estágios." },
       { num: 5, label: "Reso (ON/OFF)", action: "toggle_param", paramKey: "kitResoSw", description: "Liga (ON) ou desliga (OFF) o efeito Kit Resonance." },
       { num: 6, label: "ResoOnly (ON/OFF)", action: "toggle_param", paramKey: "resoOnlySw", description: "Ouve temporariamente apenas o som da ressonância do kit." }
     ],
     items: [
-      { id: "kr_stage", label: "Estágio da Cadeia KIT RESONANCE", paramKey: "kitResoStage", type: "enum", options: ["1: PRE EQ", "2: PRE TRNSNT", "3: KIT RESO (Principal)", "4: POST EQ", "5: POST COMP", "6: BUS SEND"], defaultVal: "3: KIT RESO (Principal)", row: 1, col: 1, explanation: "Seleciona o estágio da cadeia KIT RESONANCE." },
+      { id: "kr_stage", label: "Estágio da Cadeia KIT RESONANCE", paramKey: "kitResoStage", type: "enum", options: ["1: PRE EQ", "2: PRE TRNSNT", "3: KIT RESO (Principal)", "4: POST EQ", "5: POST COMP", "6: BUS SEND", "Aba SEND (Envio por Pad)"], defaultVal: "3: KIT RESO (Principal)", row: 1, col: 1, explanation: "Seleciona o estágio da cadeia KIT RESONANCE." },
       { id: "kr_dtype", label: "Drums Type", paramKey: "kitResoDrumsType", type: "enum", options: ["STANDARD SET", "SMALL SET"], defaultVal: "STANDARD SET", row: 2, col: 1, explanation: "Tipo de conjunto de tambores para ressonância (STANDARD SET ou SMALL SET)." },
       { id: "kr_level", label: "Kit Resonance Level", paramKey: "kitResoLevel", type: "db", min: -61, max: 12, step: 0.5, defaultVal: -4.5, row: 2, col: 2, explanation: "Volume da ressonância do kit (-INF a +12.0 dB)." },
       { id: "kr_time", label: "Time", paramKey: "kitResoTime", type: "int", min: -64, max: 0, defaultVal: -64, row: 3, col: 1, explanation: "Tempo de reverberação da ressonância do kit (-64 a 0)." },
@@ -1463,8 +1465,8 @@ Object.assign(window.V31_SCREENS, {
     layoutType: "grid",
     fButtons: [
       { num: 1, label: "PRE-GATE", action: "goto", target: "BUS_FX_SIDE_CHAIN", description: "Aba atual: parâmetros de Pre-Gate para BUS A–D FX1/FX2." },
-      { num: 2, label: "PAD ASSIGN", action: "announce", message: "Aba PAD ASSIGN do Side Chain: defina Pad Side Chain Control (OFF, BUS-A FX1..BUS-D FX2) para cada pad.", description: "Define qual efeito cada pad controla via Side Chain." },
-      { num: 3, label: "PAD SEND", action: "announce", message: "Aba PAD SEND do Side Chain: ajuste Side Chain Control Send Level (-INF a +12.0 dB) para cada pad.", description: "Ajusta a intensidade do sinal de Side Chain enviado por cada pad." },
+      { num: 2, label: "PAD ASSIGN", action: "goto", target: "BUS_FX_SC_PAD_ASSIGN", description: "Define qual efeito cada pad controla via Side Chain (OFF, BUS-A FX1..BUS-D FX2)." },
+      { num: 3, label: "PAD SEND", action: "goto", target: "BUS_FX_SC_PAD_SEND", description: "Ajusta a intensidade do sinal de Side Chain enviado por cada pad (-INF a +12.0 dB)." },
       { num: 4, label: "---", action: "none", description: "Sem função." },
       { num: 5, label: "---", action: "none", description: "Sem função." },
       { num: 6, label: "---", action: "none", description: "Sem função." }
@@ -1767,7 +1769,7 @@ Object.assign(window.V31_SCREENS, {
       { num: 3, label: "---", action: "none", description: "Sem função." },
       { num: 4, label: "---", action: "none", description: "Sem função." },
       { num: 5, label: "---", action: "none", description: "Sem função." },
-      { num: 6, label: "IMG IMPORT", action: "announce", message: "Tela KIT IMAGE IMPORT (.PNG): selecione um arquivo PNG na pasta /IMPORT do cartão SD e pressione F6 (IMPORT) e depois OK.", description: "Importa uma imagem .PNG do cartão SD para o fundo do kit (quando Kit Image = ON)." }
+      { num: 6, label: "IMG IMPORT", action: "goto", target: "KIT_IMAGE_IMPORT", description: "Abre a tela KIT IMAGE IMPORT (.PNG) para importar uma imagem da pasta /IMPORT do cartão SD (quando Kit Image = ON)." }
     ],
     items: [
       { id: "kvw_img", label: "1. Kit Image", paramKey: "kitViewImage", type: "enum", options: ["OFF", "ON", "GLOBAL"], defaultVal: "GLOBAL", row: 1, col: 1, explanation: "Configura a imagem de fundo da tela KIT (OFF: sem imagem; ON: imagem do kit; GLOBAL: segue a opção global de SYSTEM > OPTION)." },
@@ -2172,7 +2174,7 @@ Object.assign(window.V31_SCREENS, {
       "No rodapé: [F1] (PRODUCT) seleciona se o arquivo no cartão SD veio do V31, V51 ou V71; [F6] (LOAD) carrega o kit.",
     layoutType: "list",
     fButtons: [
-      { num: 1, label: "PRODUCT (V31/V51/V71)", action: "announce", message: "Janela PRODUCT: escolha entre V31, V51 ou V71 para carregar backups de kit de outros módulos da série V.", description: "Seleciona o modelo de produto (V31, V51 ou V71) do backup de kit." },
+      { num: 1, label: "PRODUCT (V31/V51/V71)", action: "toggle_param", paramKey: "load1KitProduct", description: "Seleciona o modelo de produto (V31, V51 ou V71) do backup de kit salvo no cartão SD." },
       { num: 2, label: "---", action: "none", description: "Sem função." },
       { num: 3, label: "---", action: "none", description: "Sem função." },
       { num: 4, label: "---", action: "none", description: "Sem função." },
@@ -2817,8 +2819,8 @@ Object.assign(window.V31_SCREENS, {
     fButtons: [
       { num: 1, label: "HUB", action: "goto", target: "DRUMLINK_HUB", description: "Aba atual: configurações de RF e MIDI do Hub DrumLink." },
       { num: 2, label: "BASIC", action: "goto", target: "DRUMLINK_BASIC", description: "Muda para DrumLink - TRIGGER BASIC (Assign, Sensitivity, Threshold, Retrigger, Scan/Mask Time, TOOLS e INPUT CONFIG)." },
-      { num: 3, label: "CURVE", action: "announce", message: "Aba DrumLink - TRIGGER CURVE: ajuste Curve (USER, LINEAR, LOG1–3, POW1–3, EXP1–3) e Dynamic Range (0–100). Lembre-se de percutir o pad (tecla B) para sincronizar o asterisco (*) com o WT-10/DWe!", description: "Configura a curva e faixa dinâmica do pad sem fio." },
-      { num: 4, label: "OPT/ADV", action: "announce", message: "Aba DrumLink - TRIGGER OPTIONS/ADVANCED: ajuste LED On Hit, Rim Gain, Rimshot/Head, Positional Sensing, Bell/Bow, CC Smoothness, Closed Pedal Tune e XTalk Cancel (OFF, 1–80).", description: "Configura opções avançadas de cada série de pad no WT-10 ou DWe." },
+      { num: 3, label: "CURVE", action: "goto", target: "DRUMLINK_CURVE", description: "Abre a aba DrumLink - TRIGGER CURVE (Curve USER/LINEAR..EXP3 e Dynamic Range 0–100)." },
+      { num: 4, label: "OPT/ADV", action: "goto", target: "DRUMLINK_OPT_ADV", description: "Abre a aba DrumLink - TRIGGER OPTIONS/ADVANCED (LED On Hit, Rim Gain, Rimshot/Head, Positional Sensing, Bell/Bow, CC Smoothness, Closed Pedal Tune e XTalk Cancel)." },
       { num: 5, label: "PAIRING (ON/OFF)", action: "announce", message: "PAD PAIRING ativado por 15 segundos! Now pairing... Bata uma vez no tambor ou na borda do prato conectado ao WT-10 / DWe (pressione a tecla B) para parear.", description: "Ativa o modo de pareamento sem fio por 15 segundos." },
       { num: 6, label: "DrumLink (ON/OFF)", action: "toggle_param", paramKey: "drumLinkSw", description: "Liga (ON) ou desliga (OFF) a comunicação com o Hub DrumLink." }
     ],
@@ -2851,10 +2853,10 @@ Object.assign(window.V31_SCREENS, {
     fButtons: [
       { num: 1, label: "HUB", action: "goto", target: "DRUMLINK_HUB", description: "Volta para a aba HUB." },
       { num: 2, label: "BASIC", action: "goto", target: "DRUMLINK_BASIC", description: "Aba atual: TRIGGER BASIC." },
-      { num: 3, label: "CURVE", action: "announce", message: "Aba CURVE: edite Curve (USER, LINEAR..EXP3) e Dynamic Range (0–100).", description: "Muda para a aba CURVE." },
-      { num: 4, label: "OPT/ADV", action: "announce", message: "Aba OPT/ADV: edite parâmetros específicos da série KD, PD, VH, CY, RT ou DWe.", description: "Muda para a aba OPT/ADV." },
-      { num: 5, label: "TOOLS", action: "announce", message: "Janela DrumLink TOOLS aberta: opções INPUT CONFIG (configurar tipo de pad no WT-10, modo Hi-Hat e modo 2 Zone), CALIBRATE DRUM/BOW/PEDAL (calibrar pele/corpo/pedal) e UNPAIR (desparear).", description: "Abre a janela TOOLS (Input Config, Calibração de Pedal/Tambor/Prato e Unpair)." },
-      { num: 6, label: "INPUT CONFIG / DEFAULT", action: "reset_section", description: "Abre INPUT CONFIGURATION (no WT-10) ou restaura padrões DEFAULT (no DWe)." }
+      { num: 3, label: "CURVE", action: "goto", target: "DRUMLINK_CURVE", description: "Muda para a aba CURVE (Curve USER, LINEAR..EXP3 e Dynamic Range 0–100)." },
+      { num: 4, label: "OPT/ADV", action: "goto", target: "DRUMLINK_OPT_ADV", description: "Muda para a aba OPT/ADV (parâmetros específicos da série KD, PD, VH, CY, RT ou DWe)." },
+      { num: 5, label: "TOOLS", action: "goto", target: "DRUMLINK_TOOLS", description: "Abre a janela TOOLS (Input Config, Calibração de Pedal/Tambor/Prato e Unpair)." },
+      { num: 6, label: "INPUT CONFIG", action: "goto", target: "DRUMLINK_INPUT_CONFIG", description: "Abre INPUT CONFIGURATION (no WT-10) ou restaura padrões DEFAULT (no DWe)." }
     ],
     items: [
       { id: "dlb_pad", label: "1. Pad Sem Fio Selecionado (1/9)", paramKey: "dlSelectedPad", type: "enum", options: ["1/9: 20\" Bass Drum (DWe)", "2/9: 6.5x14\" Snare (DWe)", "3/9: 10\" Tom (DWe)", "4/9: 12\" Tom (DWe)", "5/9: 14\" Floor Tom (DWe)", "6/9: Hi-Hat (DWe)", "7/9: 14\" Crash (DWe)", "8/9: 16\" Crash (DWe)", "9/9: 18\" Ride (DWe)", "WT-10 PAD 1: PDX-8", "WT-10 PAD 1: CY-16R-T", "WT-10 PAD 1: VH-10"], defaultVal: "1/9: 20\" Bass Drum (DWe)", row: 1, col: 1, explanation: "Seleciona qual pad sem fio pareado está em edição (ou bata no pad com a tecla B)." },
@@ -2881,9 +2883,9 @@ Object.assign(window.V31_SCREENS, {
       "Como usar com os botões F: Ao bater em um pad (ex: TOM1), se outro pad vibrar e disparar (aparece em vermelho no monitor), pressione [F1] (FOCUS) para mover o cursor automaticamente para o pad que sofreu interferência, e depois pressione [F2] (SET) para aplicar automaticamente o valor mínimo ideal! Ou ajuste manualmente com as setas e o Disco.",
     layoutType: "grid",
     fButtons: [
-      { num: 1, label: "FOCUS", action: "announce", message: "Cursor movido automaticamente (FOCUS) para o pad que detectou vibração de crosstalk!", description: "Move o cursor diretamente para o pad que está sofrendo crosstalk." },
-      { num: 2, label: "SET", action: "announce", message: "Valor ideal de XTalk Cancel Rate definido automaticamente para eliminar o disparo acidental!", description: "Define automaticamente o valor mínimo de cancelamento necessário para o pad focado." },
-      { num: 3, label: "SET ALL", action: "announce", message: "Valores de XTalk Cancel Rate ajustados automaticamente para todos os pads afetados!", description: "Ajusta automaticamente todos os pads que detectaram vibração." },
+      { num: 1, label: "FOCUS", action: "xtalk_focus", description: "Move o cursor diretamente para o pad que está sofrendo crosstalk." },
+      { num: 2, label: "SET", action: "xtalk_set", description: "Define automaticamente o valor mínimo de cancelamento necessário para o pad focado." },
+      { num: 3, label: "SET ALL", action: "xtalk_set_all", description: "Ajusta automaticamente todos os pads que detectaram vibração." },
       { num: 4, label: "---", action: "none", description: "Sem função." },
       { num: 5, label: "---", action: "none", description: "Sem função." },
       { num: 6, label: "EXIT", action: "goto", target: "TRIGGER_ADVANCED", description: "Sai do monitor XTALK e retorna para TRIGGER ADVANCED." }
@@ -2919,7 +2921,7 @@ Object.assign(window.V31_SCREENS, {
       { num: 1, label: "BASIC", action: "goto", target: "SYSTEM_MIDI_BASIC", description: "Aba atual: configurações básicas de MIDI global." },
       { num: 2, label: "CONTROL", action: "goto", target: "SYSTEM_MIDI_CONTROL", description: "Muda para a aba CONTROL (números de Control Change CC, HH Note# Border, Hi-Res Velocity e Choke Shot)." },
       { num: 3, label: "SYNC", action: "goto", target: "SYSTEM_MIDI_SYNC", description: "Muda para a aba SYNC (sincronismo de MIDI Clock interno/externo)." },
-      { num: 4, label: "PROG CHG", action: "announce", message: "Aba SYSTEM MIDI - PROG CHG: especifique livremente a correspondência entre os Drum Kits (001–200) e os números de Program Change (Bank0–PC0 a Bank1–PC127).", description: "Configura a tabela de Program Change." },
+      { num: 4, label: "PROG CHG", action: "goto", target: "SYSTEM_MIDI_PROG_CHG", description: "Abre a tabela de correspondência de Program Change (Bank0–PC0 a Bank1–PC127 por kit)." },
       { num: 5, label: "---", action: "none", description: "Sem função." },
       { num: 6, label: "---", action: "none", description: "Sem função." }
     ],
@@ -2949,7 +2951,7 @@ Object.assign(window.V31_SCREENS, {
       { num: 1, label: "BASIC", action: "goto", target: "SYSTEM_MIDI_BASIC", description: "Volta para a aba BASIC." },
       { num: 2, label: "CONTROL", action: "goto", target: "SYSTEM_MIDI_CONTROL", description: "Aba atual: CONTROL." },
       { num: 3, label: "SYNC", action: "goto", target: "SYSTEM_MIDI_SYNC", description: "Muda para a aba SYNC." },
-      { num: 4, label: "PROG CHG", action: "announce", message: "Aba PROG CHG selecionada.", description: "Muda para a aba PROG CHG." },
+      { num: 4, label: "PROG CHG", action: "goto", target: "SYSTEM_MIDI_PROG_CHG", description: "Muda para a aba PROG CHG." },
       { num: 5, label: "---", action: "none", description: "Sem função." },
       { num: 6, label: "DEFAULT", action: "reset_section", description: "Restaura as configurações de CC para os valores padrão." }
     ],
@@ -2979,7 +2981,7 @@ Object.assign(window.V31_SCREENS, {
       { num: 1, label: "BASIC", action: "goto", target: "SYSTEM_MIDI_BASIC", description: "Volta para a aba BASIC." },
       { num: 2, label: "CONTROL", action: "goto", target: "SYSTEM_MIDI_CONTROL", description: "Muda para a aba CONTROL." },
       { num: 3, label: "SYNC", action: "goto", target: "SYSTEM_MIDI_SYNC", description: "Aba atual: SYNC." },
-      { num: 4, label: "PROG CHG", action: "announce", message: "Aba PROG CHG.", description: "Muda para a aba PROG CHG." },
+      { num: 4, label: "PROG CHG", action: "goto", target: "SYSTEM_MIDI_PROG_CHG", description: "Muda para a aba PROG CHG." },
       { num: 5, label: "---", action: "none", description: "Sem função." },
       { num: 6, label: "---", action: "none", description: "Sem função." }
     ],
@@ -3011,7 +3013,7 @@ Object.assign(window.V31_SCREENS, {
       { num: 2, label: "OTHER MST", action: "goto", target: "OUTPUT_OTHER_MST", description: "Muda para a aba OTHER MST (roteamento de Ambiência, BUS FX, USB, Song, Click e MixIn/Bluetooth)." },
       { num: 3, label: "KNOB TYPE", action: "goto", target: "OUTPUT_KNOB_TYPE", description: "Muda para a aba KNOB TYPE (função do botão giratório MASTER/PHONES e Fixed Master Volume)." },
       { num: 4, label: "LOW CUT", action: "goto", target: "OUTPUT_LOW_CUT", description: "Muda para a aba LOW CUT (corte de graves nas saídas MASTER e PHONES)." },
-      { num: 5, label: "MONITOR", action: "announce", message: "Aba OUTPUT - MONITOR: exibe os medidores de nível de saída MASTER (L/R) e PHONES (L/R).", description: "Mostra os medidores de volume de saída." },
+      { num: 5, label: "MONITOR", action: "goto", target: "OUTPUT_MONITOR", description: "Abre a aba OUTPUT - MONITOR com os medidores MASTER (L/R) e PHONES (L/R)." },
       { num: 6, label: "GLOBAL TONE", action: "goto", target: "GLOBAL_TONE_SETUP", description: "Abre a tela de configuração do GLOBAL TONE." }
     ],
     items: [
@@ -3046,7 +3048,7 @@ Object.assign(window.V31_SCREENS, {
       { num: 2, label: "OTHER MST", action: "goto", target: "OUTPUT_OTHER_MST", description: "Aba atual: OTHER MST." },
       { num: 3, label: "KNOB TYPE", action: "goto", target: "OUTPUT_KNOB_TYPE", description: "Muda para KNOB TYPE." },
       { num: 4, label: "LOW CUT", action: "goto", target: "OUTPUT_LOW_CUT", description: "Muda para LOW CUT." },
-      { num: 5, label: "MONITOR", action: "announce", message: "Aba MONITOR.", description: "Mostra medidores." },
+      { num: 5, label: "MONITOR", action: "goto", target: "OUTPUT_MONITOR", description: "Mostra os medidores de saída MASTER e PHONES." },
       { num: 6, label: "GLOBAL TONE", action: "goto", target: "GLOBAL_TONE_SETUP", description: "Abre GLOBAL TONE." }
     ],
     items: [
@@ -3079,7 +3081,7 @@ Object.assign(window.V31_SCREENS, {
       { num: 2, label: "OTHER MST", action: "goto", target: "OUTPUT_OTHER_MST", description: "Muda para OTHER MST." },
       { num: 3, label: "KNOB TYPE", action: "goto", target: "OUTPUT_KNOB_TYPE", description: "Aba atual: KNOB TYPE." },
       { num: 4, label: "LOW CUT", action: "goto", target: "OUTPUT_LOW_CUT", description: "Muda para LOW CUT." },
-      { num: 5, label: "MONITOR", action: "announce", message: "Aba MONITOR.", description: "Mostra medidores." },
+      { num: 5, label: "MONITOR", action: "goto", target: "OUTPUT_MONITOR", description: "Mostra os medidores de saída MASTER e PHONES." },
       { num: 6, label: "GLOBAL TONE", action: "goto", target: "GLOBAL_TONE_SETUP", description: "Abre GLOBAL TONE." }
     ],
     items: [
@@ -3402,7 +3404,7 @@ Object.assign(window.V31_SCREENS, {
       { num: 6, label: "UPDATE", action: "confirm_action", confirmMsg: "Atualização do Pad Digital concluída: Complete! Status = OK.", description: "Atualiza o firmware do pad digital selecionado." }
     ],
     shiftFButtons: [
-      { num: 6, label: "RECOVER (Digital Pad Recovery)", action: "announce", message: "Assistente DIGITAL PAD RECOVERY iniciado: STEP 1: Desconecte todos os pads digitais e pressione F6 (NEXT). STEP 2: Conecte o pad digital na porta DIGITAL TRIGGER IN 1 mantendo o botão [FUNC] do pad pressionado e pressione F6 (NEXT). STEP 3: Escolha o modelo em Target Digital Pad (PD-14DSX, PD-140DS, CY-18DR, VH-14D) e pressione F6 (RECOVER)!", description: "[SHIFT]+[F6]: Abre o assistente de recuperação de pad digital em 3 passos." }
+      { num: 6, label: "RECOVER (Digital Pad Recovery)", action: "goto", target: "DIGITAL_PAD_RECOVERY", description: "[SHIFT]+[F6]: Abre o assistente DIGITAL PAD RECOVERY em 3 passos (STEP 1, STEP 2, STEP 3)." }
     ],
     items: [
       { id: "sid_pad1", label: "Pad Digital 1: PD-14DSX", paramKey: "digPadStatus", type: "enum", options: ["Ver 1.11 - Status: OK", "Ver 1.00 - Status: Need to update"], defaultVal: "Ver 1.11 - Status: OK", row: 1, col: 1, explanation: "Status do pad digital conectado. Pressione [F6] para atualizar ou [SHIFT]+[F6] para o modo Recovery." }
@@ -3447,7 +3449,7 @@ Object.assign(window.V31_SCREENS, {
       "No rodapé: [F1] (REMOVE LIC) abre a tela 'FACTORY RESET WITH USER LICENSE' (que limpa também os Racks e a licença da conta Roland Cloud); [F6] (EXECUTE) abre a confirmação ('This will clear all internal memory contents. Are you sure? EXIT / OK').",
     layoutType: "list",
     fButtons: [
-      { num: 1, label: "REMOVE LIC", action: "announce", message: "Tela FACTORY RESET WITH USER LICENSE aberta: Todas as 4 opções (User Samples, Expansion Slots and Racks, User License e All Coach Scores) estão marcadas. Pressione F6 (EXECUTE) para restaurar tudo inclusive licenças da Roland Cloud.", description: "Abre a restauração completa incluindo remoção de licença da Roland Cloud e Racks." },
+      { num: 1, label: "REMOVE LIC", action: "goto", target: "FACTORY_RESET_LICENSE", description: "Abre a tela FACTORY RESET WITH USER LICENSE (inclui remoção de licença da Roland Cloud e Racks)." },
       { num: 2, label: "---", action: "none", description: "Sem função." },
       { num: 3, label: "---", action: "none", description: "Sem função." },
       { num: 4, label: "---", action: "none", description: "Sem função." },
@@ -3480,9 +3482,9 @@ Object.assign(window.V31_SCREENS, {
       { num: 1, label: "SLOT", action: "goto", target: "EXPANSION_SLOT", description: "Aba atual: Slots 1 a 6 ativos." },
       { num: 2, label: "RACK", action: "goto", target: "EXPANSION_RACK", description: "Muda para a aba RACK (até 100 expansões/kit packs instalados)." },
       { num: 3, label: "OPTIMIZE", action: "confirm_action", confirmMsg: "Optimize the slots: Área dos Slots otimizada com sucesso!", description: "Otimiza (desfragmenta) a área de memória dos Slots 1–6." },
-      { num: 4, label: "LOAD TO KIT", action: "announce", message: "Janela LOAD TO KIT aberta: use as setas para escolher um kit da expansão (ex: 1: UK Wet Booth .. 5: LoFi Overdrive), pressione F5 (PREVIEW) para ouvir, F3 (LOAD ALL) para carregar todos, ou F6 (LOAD) para copiar para um Kit do Usuário!", description: "Abre a janela LOAD TO KIT para carregar drum kits da expansão nos kits do usuário." },
+      { num: 4, label: "LOAD TO KIT", action: "goto", target: "EXPANSION_LOAD_TO_KIT", description: "Abre a janela LOAD TO KIT para carregar drum kits da expansão nos kits do usuário." },
       { num: 5, label: "REMOVE", action: "confirm_action", confirmMsg: "Expansão removida do Slot selecionado.", description: "Remove a atribuição da expansão do Slot selecionado." },
-      { num: 6, label: "EXP USAGE", action: "announce", message: "Janela KITS USING EACH EXPANSION aberta: Slot 1 (EXV001) é usado nos Kits 046 UK Wet Booth, 047 UK Wet Studio, 048 LoFi Overdrive. Pressione Seta Direita e F5 (SELECT) para ir ao kit.", description: "Mostra a lista de Drum Kits que utilizam cada Slot." }
+      { num: 6, label: "EXP USAGE", action: "goto", target: "EXPANSION_USAGE_WINDOW", description: "Abre a janela KITS USING EACH EXPANSION mostrando quais Drum Kits utilizam cada Slot." }
     ],
     shiftFButtons: [
       { num: 6, label: "REMOVE ALL", action: "confirm_action", confirmMsg: "Todos os Slots 1 a 6 foram limpos (REMOVE ALL).", description: "[SHIFT]+[F6]: Remove as expansões de todos os 6 slots de uma vez." }
@@ -3513,16 +3515,27 @@ Object.assign(window.V31_SCREENS, {
     fButtons: [
       { num: 1, label: "SLOT", action: "goto", target: "EXPANSION_SLOT", description: "Volta para a aba SLOT (1–6)." },
       { num: 2, label: "RACK", action: "goto", target: "EXPANSION_RACK", description: "Aba atual: RACK (1–100)." },
-      { num: 3, label: "SORT BY...", action: "announce", message: "Janela Rack Sort Rule: escolha entre Sort by [Default], [^ Expansion ID], [v Expansion ID], [^ Purchase Type] ou [v Purchase Type].", description: "Altera a ordem de classificação dos Racks." },
-      { num: 4, label: "LOAD TO SLOT", action: "announce", message: "Janela LOAD TO SLOT aberta: escolha um Slot de destino (Slot 1 a Slot 6) com o Disco e pressione F6 (LOAD) para carregar a expansão.", description: "Carrega a expansão selecionada no Rack para um dos Slots 1 a 6." },
+      { num: 3, label: "SORT BY...", action: "goto", target: "EXPANSION_RACK_SORT", description: "Abre a janela Rack Sort Rule para classificar os Racks (Default, ^/v Expansion ID, ^/v Purchase Type)." },
+      { num: 4, label: "LOAD TO SLOT", action: "goto", target: "EXPANSION_LOAD_TO_SLOT", description: "Abre a janela LOAD TO SLOT para carregar a expansão selecionada em um dos Slots 1 a 6." },
       { num: 5, label: "UNINSTALL", action: "confirm_action", confirmMsg: "Nota: Expansões pré-instaladas de fábrica (EXV001–003) não podem ser desinstaladas. Pacote de usuário desinstalado.", description: "Desinstala do Rack a expansão selecionada." },
       { num: 6, label: "INSTALL", action: "announce", message: "Instalador de Expansão via Cartão SD aberto (pasta /IMPORT).", description: "Instala uma expansão ou Kit Pack a partir do cartão SD." }
     ],
     items: [
-      { id: "expr_r1", label: "Rack 1 (Linha 1, Col 1): EXV001 Wood Room Studio UK 1", paramKey: "rackCursor", type: "enum", options: ["Rack 1: EXV001 Wood Room Studio UK 1 (Pre-installed, 5 kits, 30 inst)"], defaultVal: "Rack 1: EXV001 Wood Room Studio UK 1 (Pre-installed, 5 kits, 30 inst)", row: 1, col: 1, explanation: "Rack 1 pré-instalado de fábrica." },
-      { id: "expr_r2", label: "Rack 2 (Linha 1, Col 2): EXV002 Electronic&Percussion 1", paramKey: "rackCursor", type: "enum", options: ["Rack 2: EXV002 Electronic&Percussion 1 (Pre-installed, 25 kits, 712 inst)"], defaultVal: "Rack 2: EXV002 Electronic&Percussion 1 (Pre-installed, 25 kits, 712 inst)", row: 1, col: 2, explanation: "Rack 2 pré-instalado de fábrica (1 seta à direita)." },
-      { id: "expr_r3", label: "Rack 3 (Linha 1, Col 3): EXV003 The Brush 1", paramKey: "rackCursor", type: "enum", options: ["Rack 3: EXV003 The Brush 1 (Pre-installed, 2 kits, 22 inst)"], defaultVal: "Rack 3: EXV003 The Brush 1 (Pre-installed, 2 kits, 22 inst)", row: 1, col: 3, explanation: "Rack 3 pré-instalado de fábrica (2 setas à direita)." },
-      { id: "expr_r4", label: "Rack 4..100: EMPTY", paramKey: "rackCursor", type: "enum", options: ["EMPTY (Disponível para instalar via Roland Cloud / SD Card)"], defaultVal: "EMPTY (Disponível para instalar via Roland Cloud / SD Card)", row: 1, col: 4, explanation: "Posições livres no Rack (até 100 pacotes)." }
+      { id: "expr_r1", label: "Rack 1 (Linha 1, Col 1): EXV001 Wood Room Studio UK 1", paramKey: "rackCursor", type: "enum", options: ["Rack 1: EXV001 Wood Room Studio UK 1 (Pre-installed, 5 kits, 30 inst)"], defaultVal: "Rack 1: EXV001 Wood Room Studio UK 1 (Pre-installed, 5 kits, 30 inst)", row: 1, col: 1, explanation: "Rack 1 (Linha 1, Coluna 1): EXV001 Wood Room Studio UK 1 (pré-instalado de fábrica)." },
+      { id: "expr_r2", label: "Rack 2 (Linha 1, Col 2): EXV002 Electronic&Percussion 1", paramKey: "rackCursor", type: "enum", options: ["Rack 2: EXV002 Electronic&Percussion 1 (Pre-installed, 25 kits, 712 inst)"], defaultVal: "Rack 2: EXV002 Electronic&Percussion 1 (Pre-installed, 25 kits, 712 inst)", row: 1, col: 2, explanation: "Rack 2 (Linha 1, Coluna 2 — 1 seta à direita): EXV002 Electronic&Percussion 1." },
+      { id: "expr_r3", label: "Rack 3 (Linha 1, Col 3): EXV003 The Brush 1", paramKey: "rackCursor", type: "enum", options: ["Rack 3: EXV003 The Brush 1 (Pre-installed, 2 kits, 22 inst)"], defaultVal: "Rack 3: EXV003 The Brush 1 (Pre-installed, 2 kits, 22 inst)", row: 1, col: 3, explanation: "Rack 3 (Linha 1, Coluna 3 — 2 setas à direita): EXV003 The Brush 1." },
+      { id: "expr_r4", label: "Rack 4 (Linha 1, Col 4): EMPTY", paramKey: "rackCursor", type: "enum", options: ["EMPTY (Disponível para instalar via Roland Cloud / SD Card)"], defaultVal: "EMPTY (Disponível para instalar via Roland Cloud / SD Card)", row: 1, col: 4, explanation: "Rack 4 (Linha 1, Coluna 4 — 3 setas à direita): Vazio." },
+      { id: "expr_r5", label: "Rack 5 (Linha 1, Col 5): EMPTY", paramKey: "rackCursor", type: "enum", options: ["EMPTY (Disponível para instalar via Roland Cloud / SD Card)"], defaultVal: "EMPTY (Disponível para instalar via Roland Cloud / SD Card)", row: 1, col: 5, explanation: "Rack 5 (Linha 1, Coluna 5 — 4 setas à direita): Vazio." },
+      { id: "expr_r6", label: "Rack 6 (Linha 2, Col 1): EMPTY", paramKey: "rackCursor", type: "enum", options: ["EMPTY (Disponível para instalar via Roland Cloud / SD Card)"], defaultVal: "EMPTY (Disponível para instalar via Roland Cloud / SD Card)", row: 2, col: 1, explanation: "Rack 6 (Linha 2, Coluna 1 — 1 seta para baixo): Vazio." },
+      { id: "expr_r7", label: "Rack 7 (Linha 2, Col 2): EMPTY", paramKey: "rackCursor", type: "enum", options: ["EMPTY"], defaultVal: "EMPTY", row: 2, col: 2, explanation: "Rack 7 (Linha 2, Coluna 2)." },
+      { id: "expr_r8", label: "Rack 8 (Linha 2, Col 3): EMPTY", paramKey: "rackCursor", type: "enum", options: ["EMPTY"], defaultVal: "EMPTY", row: 2, col: 3, explanation: "Rack 8 (Linha 2, Coluna 3)." },
+      { id: "expr_r9", label: "Rack 9 (Linha 2, Col 4): EMPTY", paramKey: "rackCursor", type: "enum", options: ["EMPTY"], defaultVal: "EMPTY", row: 2, col: 4, explanation: "Rack 9 (Linha 2, Coluna 4)." },
+      { id: "expr_r10", label: "Rack 10 (Linha 2, Col 5): EMPTY", paramKey: "rackCursor", type: "enum", options: ["EMPTY"], defaultVal: "EMPTY", row: 2, col: 5, explanation: "Rack 10 (Linha 2, Coluna 5)." },
+      { id: "expr_r11", label: "Rack 11 (Linha 3, Col 1): EMPTY", paramKey: "rackCursor", type: "enum", options: ["EMPTY"], defaultVal: "EMPTY", row: 3, col: 1, explanation: "Rack 11 (Linha 3, Coluna 1 — 2 setas para baixo)." },
+      { id: "expr_r12", label: "Rack 12 (Linha 3, Col 2): EMPTY", paramKey: "rackCursor", type: "enum", options: ["EMPTY"], defaultVal: "EMPTY", row: 3, col: 2, explanation: "Rack 12 (Linha 3, Coluna 2)." },
+      { id: "expr_r13", label: "Rack 13 (Linha 3, Col 3): EMPTY", paramKey: "rackCursor", type: "enum", options: ["EMPTY"], defaultVal: "EMPTY", row: 3, col: 3, explanation: "Rack 13 (Linha 3, Coluna 3)." },
+      { id: "expr_r14", label: "Rack 14 (Linha 3, Col 4): EMPTY", paramKey: "rackCursor", type: "enum", options: ["EMPTY"], defaultVal: "EMPTY", row: 3, col: 4, explanation: "Rack 14 (Linha 3, Coluna 4)." },
+      { id: "expr_r15", label: "Rack 15 (Linha 3, Col 5): EMPTY", paramKey: "rackCursor", type: "enum", options: ["EMPTY"], defaultVal: "EMPTY", row: 3, col: 5, explanation: "Rack 15 (Linha 3, Coluna 5)." }
     ]
   },
 
@@ -3959,9 +3972,8 @@ Object.assign(window.V31_SCREENS, {
       { num: 6, label: "►/■ (Play/Stop)", action: "toggle_song", description: "Inicia ou interrompe a reprodução da música selecionada." }
     ],
     items: [
-      { id: "sng_src", label: "1. Fonte de Música Atual (SONG SOURCE)", paramKey: "songSource", type: "enum", options: ["INTERNAL (37 Músicas Integradas)", "SD CARD <Top> (Arquivos WAV/MP3 na raiz)", "DRUM REC DATA (Gravações MIDI)", "AUDIO REC DATA (Gravações WAV)"], defaultVal: "INTERNAL (37 Músicas Integradas)", row: 1, col: 1, explanation: "Fonte de música selecionada (também acessível via [F1] SONG SOURCE)." },
-      { id: "sng_sel", label: "2. Música Selecionada (001 a 037 / SD)", paramKey: "selectedSong", type: "song_selector", defaultVal: "001: Drum Solo", row: 2, col: 1, explanation: "Use o Disco [+]/[-] para escolher entre todas as 37 músicas do Data List (ou arquivos do cartão SD)." },
-      { id: "sng_spd", label: "3. Speed (Velocidade do Áudio 50%–150%)", paramKey: "songSpeed", type: "int", min: 50, max: 150, step: 5, unit: "%", defaultVal: 100, row: 3, col: 1, explanation: "Altera o andamento do arquivo de áudio sem mudar a afinação (50% a 150% — 2 setas para baixo)." }
+      { id: "sng_sel", label: "1. Música Selecionada (Song 001 a 037 / SD)", paramKey: "selectedSong", type: "song_selector", defaultVal: "001: Drum Solo", row: 1, col: 1, explanation: "Linha 1 (posição inicial): Use o Disco [+]/[-] para escolher a música. Pressione [F1] (SONG SOURCE) para alternar entre INTERNAL, SD CARD <Top>, DRUM REC DATA e AUDIO REC DATA." },
+      { id: "sng_spd", label: "2. Speed (Velocidade do Áudio 50%–150%)", paramKey: "songSpeed", type: "int", min: 50, max: 150, step: 5, unit: "%", defaultVal: 100, row: 2, col: 1, explanation: "Linha 2 (1 seta para baixo [▼]): Altera o andamento do arquivo de áudio sem mudar a afinação (50% a 150%)." }
     ]
   },
 
@@ -4061,7 +4073,7 @@ Object.assign(window.V31_SCREENS, {
       "Pressione o botão físico [►/■] (atalho: tecla Espaço ou P) para iniciar e parar a gravação!",
     layoutType: "list",
     fButtons: [
-      { num: 1, label: "REC MODE", action: "toggle_param", paramKey: "recMode", description: "Alterna o modo de gravação entre 'DRUM REC (MIDI / SMF)' e 'AUDIO REC (WAV Audio)'." },
+      { num: 1, label: "REC MODE", action: "goto", target: "REC_MODE_WINDOW", description: "Abre a janela REC MODE para alternar entre 'DRUM REC' e 'AUDIO REC' (Manual p. 60 e 62)." },
       { num: 2, label: "---", action: "none", description: "Sem função." },
       { num: 3, label: "---", action: "none", description: "Sem função." },
       { num: 4, label: "---", action: "none", description: "Sem função." },
@@ -4069,11 +4081,32 @@ Object.assign(window.V31_SCREENS, {
       { num: 6, label: "Overwrite (ON/OFF)", action: "toggle_param", paramKey: "recOverwriteSw", description: "Em DRUM REC, marca/desmarca a caixa Overwrite para permitir sobrescrever gravações existentes." }
     ],
     items: [
-      { id: "rec_mode", label: "1. Rec Mode (F1)", paramKey: "recMode", type: "enum", options: ["DRUM REC (MIDI / SMF)", "AUDIO REC (WAV Audio)"], defaultVal: "DRUM REC (MIDI / SMF)", row: 1, col: 1, explanation: "Modo de gravação: DRUM REC (dados MIDI SMF) ou AUDIO REC (áudio WAV)." },
-      { id: "rec_num", label: "2. Rec Number", paramKey: "recNumber", type: "enum", options: ["TEMPORARY (Memória Temporária)", "SD#01 (DRUM REC)", "SD#02 (DRUM REC)", "SD#001 (AUDIO REC)", "SD#002 (AUDIO REC)"], defaultVal: "SD#01 (DRUM REC)", row: 2, col: 1, explanation: "Destino da gravação: TEMPORARY (apagado ao desligar) ou Cartão SD (SD#01–99 em DRUM REC; definido automaticamente SD#001–200 em AUDIO REC — 1 seta para baixo)." },
-      { id: "rec_trg", label: "3. Rec Target (Apenas AUDIO REC)", paramKey: "recTarget", type: "enum", options: ["ALL (Bateria + MIX IN + Bluetooth)", "DRUMS ONLY (Apenas Bateria)"], defaultVal: "ALL (Bateria + MIX IN + Bluetooth)", row: 3, col: 1, explanation: "Em AUDIO REC, define se grava tudo (ALL) ou apenas o som da bateria (DRUMS ONLY — 2 setas para baixo)." },
-      { id: "rec_gain", label: "4. Rec Gain (Apenas AUDIO REC)", paramKey: "recGain", type: "int", min: -24, max: 24, unit: "dB", defaultVal: 12, row: 4, col: 1, explanation: "Em AUDIO REC, ajusta o nível de gravação (-24 a +24 dB — 3 setas para baixo)." },
-      { id: "rec_wsong", label: "5. Play (and record) a song while recording", paramKey: "recWithSongSw", type: "enum", options: ["OFF (Desmarcado)", "ON (Marcado)"], defaultVal: "OFF (Desmarcado)", row: 5, col: 1, explanation: "Quando ON, toca a música selecionada na tela SONG simultaneamente ao iniciar a gravação (4 setas para baixo)." }
+      { id: "rec_num", label: "1. Rec Number (TEMPORARY / SD#01–99)", paramKey: "recNumber", type: "enum", options: ["TEMPORARY (Memória Temporária)", "SD#01 (DRUM REC)", "SD#02 (DRUM REC)", "SD#03 (DRUM REC)", "SD#04 (DRUM REC)"], defaultVal: "SD#01 (DRUM REC)", row: 1, col: 1, explanation: "Em DRUM REC (Linha 1 — posição inicial): Destino da gravação (TEMPORARY ou SD#01–99). Em AUDIO REC é definido automaticamente (SD#001–200)." },
+      { id: "rec_trg", label: "1. Rec Target (Apenas AUDIO REC)", paramKey: "recTarget", type: "enum", options: ["ALL (Bateria + MIX IN + Bluetooth)", "DRUMS ONLY (Apenas Bateria)"], defaultVal: "ALL (Bateria + MIX IN + Bluetooth)", row: 2, col: 1, explanation: "Em AUDIO REC (Linha 1 — posição inicial): Define se grava tudo (ALL) ou apenas o som da bateria (DRUMS ONLY)." },
+      { id: "rec_gain", label: "2. Rec Gain (Apenas AUDIO REC)", paramKey: "recGain", type: "int", min: -24, max: 24, unit: "dB", defaultVal: 12, row: 3, col: 1, explanation: "Em AUDIO REC (Linha 2 — 1 seta para baixo [▼]): Ajusta o nível de gravação (-24 a +24 dB)." },
+      { id: "rec_wsong", label: "Play (and record) a song while recording", paramKey: "recWithSongSw", type: "enum", options: ["OFF (Desmarcado)", "ON (Marcado)"], defaultVal: "OFF (Desmarcado)", row: 4, col: 1, explanation: "Caixa de seleção inferior: Quando ON, toca a música selecionada na tela SONG simultaneamente ao iniciar a gravação." }
+    ]
+  },
+
+  REC_MODE_WINDOW: {
+    id: "REC_MODE_WINDOW",
+    title: "REC MODE (Selecionar DRUM REC ou AUDIO REC)",
+    manualSectionId: "song-rec",
+    category: "Performance / Músicas e Gravação",
+    accessPath: "Na tela REC, pressione [F1] (REC MODE) (Manual p. 60 e 62).",
+    visualDescription:
+      "Janela sobreposta à esquerda da tela REC com 2 opções verticais: 'DRUM REC' e 'AUDIO REC'. Use Seta Cima [▲] / Seta Baixo [▼] ou o Disco [+]/[-] para selecionar o modo de gravação e pressione [F1] (SELECT) ou [ENTER].",
+    layoutType: "list",
+    fButtons: [
+      { num: 1, label: "SELECT", action: "goto", target: "REC_STANDBY", description: "Confirma o modo de gravação (DRUM REC ou AUDIO REC) e retorna à tela REC." },
+      { num: 2, label: "---", action: "none", description: "" },
+      { num: 3, label: "---", action: "none", description: "" },
+      { num: 4, label: "---", action: "none", description: "" },
+      { num: 5, label: "---", action: "none", description: "" },
+      { num: 6, label: "---", action: "none", description: "" }
+    ],
+    items: [
+      { id: "rmw_sel", label: "REC MODE (Modo de Gravação)", paramKey: "recMode", type: "enum", options: ["DRUM REC (MIDI / SMF)", "AUDIO REC (WAV Audio)"], defaultVal: "DRUM REC (MIDI / SMF)", row: 1, col: 1, explanation: "Escolha entre DRUM REC (gravação MIDI SMF) e AUDIO REC (gravação de áudio WAV 44.1kHz 16-bit) e pressione [F1] (SELECT) ou [ENTER]." }
     ]
   },
 
@@ -4099,6 +4132,387 @@ Object.assign(window.V31_SCREENS, {
     items: [
       { id: "arp_file", label: "1. Arquivo Gravado (Audio Rec Data)", type: "readonly", defaultVal: "SD#001: REC001.wav (44.1kHz / 16-bit Stereo)", row: 1, col: 1, explanation: "Arquivo de áudio recém-gravado. Pressione [F6] ►/■ para ouvir, [F5] SAVE para salvar no cartão SD ou [F4] CANCEL para descartar." },
       { id: "arp_time", label: "2. Duração e Posição", type: "readonly", defaultVal: "00:00 / 00:48", row: 2, col: 1, explanation: "Tempo de reprodução da gravação." }
+    ]
+  },
+
+  // ==================== SUB-TELAS INTERATIVAS ADICIONAIS (MANUAIS DO MÓDULO) ====================
+  BUS_FX_SC_PAD_ASSIGN: {
+    id: "BUS_FX_SC_PAD_ASSIGN",
+    title: "SIDE CHAIN CONTROL - PAD ASSIGN (Atribuição de Side Chain por Pad)",
+    manualSectionId: "kit-edit-bus-fx",
+    category: "MENU > KIT EDIT > BUS FX > SIDE CHAIN",
+    accessPath: "Em MENU > KIT EDIT > BUS FX > [F5] (SIDE CHAIN), pressione [F2] (PAD ASSIGN) (Manual p. 97).",
+    visualDescription:
+      "Exibe todas as colunas de pads (K, S, T1, T2, T3, HH, C1, C2, R, A) permitindo definir 'Pad Side Chain Control' (OFF, BUS-A FX1, BUS-A FX2, BUS-B FX1, BUS-B FX2, BUS-C FX1, BUS-C FX2, BUS-D FX1, BUS-D FX2) para cada pad.",
+    layoutType: "grid",
+    fButtons: [
+      { num: 1, label: "PRE-GATE", action: "goto", target: "BUS_FX_SIDE_CHAIN", description: "Volta para a aba PRE-GATE." },
+      { num: 2, label: "PAD ASSIGN", action: "goto", target: "BUS_FX_SC_PAD_ASSIGN", description: "Aba atual: PAD ASSIGN do Side Chain." },
+      { num: 3, label: "PAD SEND", action: "goto", target: "BUS_FX_SC_PAD_SEND", description: "Muda para a aba PAD SEND do Side Chain." },
+      { num: 4, label: "---", action: "none", description: "" },
+      { num: 5, label: "---", action: "none", description: "" },
+      { num: 6, label: "---", action: "none", description: "" }
+    ],
+    items: [
+      { id: "scpa_k", label: "KICK - Side Chain Control", paramKey: "scAssign_KICK", type: "enum", options: ["OFF", "BUS-A FX1", "BUS-A FX2", "BUS-B FX1", "BUS-B FX2", "BUS-C FX1", "BUS-C FX2", "BUS-D FX1", "BUS-D FX2"], defaultVal: "BUS-A FX1", row: 1, col: 1, explanation: "Coluna 1: Define qual efeito o Bumbo controla por Side Chain." },
+      { id: "scpa_s", label: "SNARE - Side Chain Control", paramKey: "scAssign_SNARE", type: "enum", options: ["OFF", "BUS-A FX1", "BUS-A FX2", "BUS-B FX1", "BUS-B FX2", "BUS-C FX1", "BUS-C FX2", "BUS-D FX1", "BUS-D FX2"], defaultVal: "OFF", row: 1, col: 2, explanation: "Coluna 2 (1 seta à direita): Define qual efeito a Caixa controla por Side Chain." },
+      { id: "scpa_t1", label: "TOM1 - Side Chain Control", paramKey: "scAssign_TOM1", type: "enum", options: ["OFF", "BUS-A FX1", "BUS-A FX2", "BUS-B FX1", "BUS-B FX2", "BUS-C FX1", "BUS-C FX2", "BUS-D FX1", "BUS-D FX2"], defaultVal: "OFF", row: 1, col: 3, explanation: "Coluna 3: Side Chain Control do Tom 1." },
+      { id: "scpa_t2", label: "TOM2 - Side Chain Control", paramKey: "scAssign_TOM2", type: "enum", options: ["OFF", "BUS-A FX1", "BUS-A FX2", "BUS-B FX1", "BUS-B FX2", "BUS-C FX1", "BUS-C FX2", "BUS-D FX1", "BUS-D FX2"], defaultVal: "OFF", row: 1, col: 4, explanation: "Coluna 4: Side Chain Control do Tom 2." },
+      { id: "scpa_t3", label: "TOM3 - Side Chain Control", paramKey: "scAssign_TOM3", type: "enum", options: ["OFF", "BUS-A FX1", "BUS-A FX2", "BUS-B FX1", "BUS-B FX2", "BUS-C FX1", "BUS-C FX2", "BUS-D FX1", "BUS-D FX2"], defaultVal: "OFF", row: 1, col: 5, explanation: "Coluna 5: Side Chain Control do Tom 3." },
+      { id: "scpa_hh", label: "HI-HAT - Side Chain Control", paramKey: "scAssign_HIHAT", type: "enum", options: ["OFF", "BUS-A FX1", "BUS-A FX2", "BUS-B FX1", "BUS-B FX2", "BUS-C FX1", "BUS-C FX2", "BUS-D FX1", "BUS-D FX2"], defaultVal: "OFF", row: 1, col: 6, explanation: "Coluna 6: Side Chain Control do Chimbal." }
+    ]
+  },
+
+  BUS_FX_SC_PAD_SEND: {
+    id: "BUS_FX_SC_PAD_SEND",
+    title: "SIDE CHAIN CONTROL - PAD SEND (Nível de Envio de Side Chain por Pad)",
+    manualSectionId: "kit-edit-bus-fx",
+    category: "MENU > KIT EDIT > BUS FX > SIDE CHAIN",
+    accessPath: "Em MENU > KIT EDIT > BUS FX > [F5] (SIDE CHAIN), pressione [F3] (PAD SEND) (Manual p. 97).",
+    visualDescription:
+      "Exibe faders verticais de 'Side Chain Control Send Level' (-INF, -60.0 a +12.0 dB) para cada pad.",
+    layoutType: "grid",
+    fButtons: [
+      { num: 1, label: "PRE-GATE", action: "goto", target: "BUS_FX_SIDE_CHAIN", description: "Volta para a aba PRE-GATE." },
+      { num: 2, label: "PAD ASSIGN", action: "goto", target: "BUS_FX_SC_PAD_ASSIGN", description: "Muda para a aba PAD ASSIGN." },
+      { num: 3, label: "PAD SEND", action: "goto", target: "BUS_FX_SC_PAD_SEND", description: "Aba atual: PAD SEND do Side Chain." },
+      { num: 4, label: "---", action: "none", description: "" },
+      { num: 5, label: "---", action: "none", description: "" },
+      { num: 6, label: "---", action: "none", description: "" }
+    ],
+    items: [
+      { id: "scps_k", label: "KICK - Side Chain Send Level", paramKey: "scSend_KICK", type: "db", min: -61, max: 12, step: 0.5, defaultVal: 0.0, row: 1, col: 1, explanation: "Coluna 1: Nível de envio de Side Chain do Bumbo (-INF a +12.0 dB)." },
+      { id: "scps_s", label: "SNARE - Side Chain Send Level", paramKey: "scSend_SNARE", type: "db", min: -61, max: 12, step: 0.5, defaultVal: 0.0, row: 1, col: 2, explanation: "Coluna 2 (1 seta à direita): Nível de envio de Side Chain da Caixa (-INF a +12.0 dB)." },
+      { id: "scps_t1", label: "TOM1 - Side Chain Send Level", paramKey: "scSend_TOM1", type: "db", min: -61, max: 12, step: 0.5, defaultVal: 0.0, row: 1, col: 3, explanation: "Coluna 3: Nível de envio de Side Chain do Tom 1." },
+      { id: "scps_t2", label: "TOM2 - Side Chain Send Level", paramKey: "scSend_TOM2", type: "db", min: -61, max: 12, step: 0.5, defaultVal: 0.0, row: 1, col: 4, explanation: "Coluna 4: Nível de envio de Side Chain do Tom 2." },
+      { id: "scps_t3", label: "TOM3 - Side Chain Send Level", paramKey: "scSend_TOM3", type: "db", min: -61, max: 12, step: 0.5, defaultVal: 0.0, row: 1, col: 5, explanation: "Coluna 5: Nível de envio de Side Chain do Tom 3." },
+      { id: "scps_hh", label: "HI-HAT - Side Chain Send Level", paramKey: "scSend_HIHAT", type: "db", min: -61, max: 12, step: 0.5, defaultVal: 0.0, row: 1, col: 6, explanation: "Coluna 6: Nível de envio de Side Chain do Chimbal." }
+    ]
+  },
+
+  KIT_IMAGE_IMPORT: {
+    id: "KIT_IMAGE_IMPORT",
+    title: "KIT IMAGE IMPORT (.PNG) (Importar Imagem de Fundo do Kit via Cartão SD)",
+    manualSectionId: "kit-options",
+    category: "MENU > KIT OPTIONS > KIT VIEW",
+    accessPath: "Em MENU > KIT OPTIONS > KIT VIEW (com Kit Image = ON), pressione [F6] (IMG IMPORT) (Manual p. 105–106).",
+    visualDescription:
+      "Navegador de arquivos .PNG da pasta /IMPORT do cartão SD (arquivos de 480×272 pixels ou menores, 24 bits). " +
+      "Use Seta Cima [▲] / Seta Baixo [▼] para escolher o arquivo .PNG, [◄]/[►] para abrir/voltar pastas, [F5] (EXIT) para voltar ou [F6] (IMPORT) para importar a imagem para o kit atual.",
+    layoutType: "list",
+    fButtons: [
+      { num: 1, label: "---", action: "none", description: "" },
+      { num: 2, label: "---", action: "none", description: "" },
+      { num: 3, label: "---", action: "none", description: "" },
+      { num: 4, label: "---", action: "none", description: "" },
+      { num: 5, label: "EXIT", action: "goto", target: "KIT_VIEW", description: "Cancela e retorna à tela KIT VIEW." },
+      { num: 6, label: "IMPORT", action: "confirm_action", confirmMsg: "Import kit image: Imagem .PNG importada com sucesso para o plano de fundo do Drum Kit!", description: "Importa o arquivo .PNG selecionado para o Drum Kit atual (pede confirmação OK)." }
+    ],
+    items: [
+      { id: "kii_file", label: "Arquivo .PNG na pasta /IMPORT", paramKey: "kitImgImportCursor", type: "enum", options: ["KitBg_StudioWood.png (480x272)", "KitBg_StageNeon.png (480x272)", "KitBg_VintageMaple.png (480x272)", "KitBg_CustomBandLogo.png (480x272)"], defaultVal: "KitBg_StudioWood.png (480x272)", row: 1, col: 1, explanation: "Escolha o arquivo .PNG com [▲]/[▼] ou Disco e pressione [F6] (IMPORT)." }
+    ]
+  },
+
+  DRUMLINK_CURVE: {
+    id: "DRUMLINK_CURVE",
+    title: "DrumLink - TRIGGER CURVE (Curva Dinâmica dos Pads WT-10 e DWe)",
+    manualSectionId: "system-trigger-drumlink-dwe",
+    category: "MENU > SYSTEM > TRIGGER > ADVANCED > DrumLink",
+    accessPath: "Em DrumLink, pressione [F3] (CURVE) (Manual p. 172, 187).",
+    visualDescription:
+      "Configura a curva de resposta de velocidade do pad sem fio WT-10 ou DWe selecionado. " +
+      "Lista vertical de 3 itens à esquerda e gráfico da curva à direita: " +
+      "Linha 1: Pad Sem Fio Selecionado. " +
+      "Linha 2: Curve (USER, LINEAR, LOG 1, LOG 2, LOG 3, POW 1, POW 2, POW 3, EXP 1, EXP 2, EXP 3). " +
+      "Linha 3: Dynamic Range (0 a 100%). " +
+      "Lembre-se de percutir o pad (tecla B) após alterar para transmitir a configuração e limpar o asterisco (*)!",
+    layoutType: "list",
+    fButtons: [
+      { num: 1, label: "HUB", action: "goto", target: "DRUMLINK_HUB", description: "Volta para a aba HUB." },
+      { num: 2, label: "BASIC", action: "goto", target: "DRUMLINK_BASIC", description: "Muda para a aba BASIC." },
+      { num: 3, label: "CURVE", action: "goto", target: "DRUMLINK_CURVE", description: "Aba atual: TRIGGER CURVE." },
+      { num: 4, label: "OPT/ADV", action: "goto", target: "DRUMLINK_OPT_ADV", description: "Muda para a aba OPT/ADV." },
+      { num: 5, label: "TOOLS", action: "goto", target: "DRUMLINK_TOOLS", description: "Abre a janela TOOLS." },
+      { num: 6, label: "INPUT CONFIG", action: "goto", target: "DRUMLINK_INPUT_CONFIG", description: "Abre INPUT CONFIGURATION." }
+    ],
+    items: [
+      { id: "dlc_pad", label: "1. Pad Sem Fio Selecionado", paramKey: "dlSelectedPad", type: "enum", options: ["1/9: 20\" Bass Drum (DWe)", "2/9: 6.5x14\" Snare (DWe)", "3/9: 10\" Tom (DWe)", "4/9: 12\" Tom (DWe)", "5/9: 14\" Floor Tom (DWe)", "6/9: Hi-Hat (DWe)", "7/9: 14\" Crash (DWe)", "8/9: 16\" Crash (DWe)", "9/9: 18\" Ride (DWe)", "WT-10 PAD 1: PDX-8", "WT-10 PAD 1: CY-16R-T", "WT-10 PAD 1: VH-10"], defaultVal: "1/9: 20\" Bass Drum (DWe)", row: 1, col: 1, explanation: "Pad sem fio em edição." },
+      { id: "dlc_curve", label: "2. Curve (Curva de Resposta)", paramKey: "dlCurve", type: "enum", options: ["USER", "LINEAR", "LOG 1", "LOG 2", "LOG 3", "POW 1", "POW 2", "POW 3", "EXP 1", "EXP 2", "EXP 3"], defaultVal: "LINEAR", row: 2, col: 1, explanation: "Curva de velocidade do pad sem fio (1 seta para baixo)." },
+      { id: "dlc_dyn", label: "3. Dynamic Range (0–100%)", paramKey: "dlDynamicRange", type: "int", min: 0, max: 100, unit: "%", defaultVal: 100, row: 3, col: 1, explanation: "Faixa dinâmica do pad sem fio (0 a 100% — 2 setas para baixo)." }
+    ]
+  },
+
+  DRUMLINK_OPT_ADV: {
+    id: "DRUMLINK_OPT_ADV",
+    title: "DrumLink - TRIGGER OPTIONS/ADVANCED (Ajustes Específicos WT-10 e DWe)",
+    manualSectionId: "system-trigger-drumlink-dwe",
+    category: "MENU > SYSTEM > TRIGGER > ADVANCED > DrumLink",
+    accessPath: "Em DrumLink, pressione [F4] (OPT/ADV) (Manual p. 173–175, 188–189).",
+    visualDescription:
+      "Configura opções específicas do pad sem fio (WT-10 ou DWe): LED On Hit (OFF/ON), Rim Gain (1–16), Rimshot/Head (0–15), Positional Sensing (OFF/ON), Bell/Bow (1–10), CC Smoothness (OFF, 1–7), Closed Pedal Tune (1–15) e XTalk Cancel (OFF, 1–80).",
+    layoutType: "list",
+    fButtons: [
+      { num: 1, label: "HUB", action: "goto", target: "DRUMLINK_HUB", description: "Volta para a aba HUB." },
+      { num: 2, label: "BASIC", action: "goto", target: "DRUMLINK_BASIC", description: "Muda para a aba BASIC." },
+      { num: 3, label: "CURVE", action: "goto", target: "DRUMLINK_CURVE", description: "Muda para a aba CURVE." },
+      { num: 4, label: "OPT/ADV", action: "goto", target: "DRUMLINK_OPT_ADV", description: "Aba atual: TRIGGER OPTIONS/ADVANCED." },
+      { num: 5, label: "TOOLS", action: "goto", target: "DRUMLINK_TOOLS", description: "Abre a janela TOOLS." },
+      { num: 6, label: "INPUT CONFIG", action: "goto", target: "DRUMLINK_INPUT_CONFIG", description: "Abre INPUT CONFIGURATION." }
+    ],
+    items: [
+      { id: "dlo_pad", label: "1. Pad Sem Fio Selecionado", paramKey: "dlSelectedPad", type: "enum", options: ["1/9: 20\" Bass Drum (DWe)", "2/9: 6.5x14\" Snare (DWe)", "3/9: 10\" Tom (DWe)", "4/9: 12\" Tom (DWe)", "5/9: 14\" Floor Tom (DWe)", "6/9: Hi-Hat (DWe)", "7/9: 14\" Crash (DWe)", "8/9: 16\" Crash (DWe)", "9/9: 18\" Ride (DWe)", "WT-10 PAD 1: PDX-8", "WT-10 PAD 1: CY-16R-T", "WT-10 PAD 1: VH-10"], defaultVal: "1/9: 20\" Bass Drum (DWe)", row: 1, col: 1, explanation: "Pad sem fio em edição." },
+      { id: "dlo_led", label: "2. LED On Hit (Piscar LED ao Tocar)", paramKey: "dlLedOnHit", type: "enum", options: ["OFF", "ON"], defaultVal: "OFF", row: 2, col: 1, explanation: "Faz o LED do transmissor piscar ao detectar batidas (1 seta para baixo)." },
+      { id: "dlo_rimgain", label: "3. Rim Gain / Edge Gain (1–16)", paramKey: "dlRimGain", type: "int", min: 1, max: 16, defaultVal: 10, row: 3, col: 1, explanation: "Sensibilidade do aro ou borda do prato (1 a 16 — 2 setas para baixo)." },
+      { id: "dlo_rimhead", label: "4. Rimshot/Head / Bell/Bow (0–15)", paramKey: "dlRimHeadAdj", type: "int", min: 0, max: 15, defaultVal: 8, row: 4, col: 1, explanation: "Equilíbrio entre pele e aro ou entre corpo e cúpula (0 a 15 — 3 setas para baixo)." },
+      { id: "dlo_pos", label: "5. Positional Sensing / FSR Auto Cal", paramKey: "dlPosSensing", type: "enum", options: ["OFF", "ON"], defaultVal: "ON", row: 5, col: 1, explanation: "Detecção de posição / calibração automática FSR (4 setas para baixo)." },
+      { id: "dlo_xtalk", label: "6. XTalk Cancel (OFF, 1–80)", paramKey: "dlXtalkCancel", type: "int", min: 0, max: 80, defaultVal: 15, row: 6, col: 1, explanation: "Cancelamento de crosstalk sem fio (0=OFF, 1 a 80 — 5 setas para baixo)." }
+    ]
+  },
+
+  DRUMLINK_TOOLS: {
+    id: "DRUMLINK_TOOLS",
+    title: "DrumLink - TOOLS (Input Config, Calibração e Unpair)",
+    manualSectionId: "system-trigger-drumlink-dwe",
+    category: "MENU > SYSTEM > TRIGGER > ADVANCED > DrumLink",
+    accessPath: "Em DrumLink (abas BASIC, CURVE ou OPT/ADV), pressione [F5] (TOOLS) (Manual p. 176, 190).",
+    visualDescription:
+      "Janela sobreposta TOOLS com botões em grade horizontal (1 linha × 3 colunas): " +
+      "Coluna 1 = INPUT CONFIG (ou CALIBRATE DRUM / BOW no DWe), Coluna 2 = CALIBRATE PEDAL (quando em Hi-Hat), Coluna 3 = UNPAIR. " +
+      "Use [◄]/[►] ou o Disco e pressione [F6] (SELECT) ou [ENTER].",
+    layoutType: "grid_menu",
+    fButtons: [
+      { num: 1, label: "---", action: "none", description: "" },
+      { num: 2, label: "---", action: "none", description: "" },
+      { num: 3, label: "---", action: "none", description: "" },
+      { num: 4, label: "---", action: "none", description: "" },
+      { num: 5, label: "CLOSE", action: "goto", target: "DRUMLINK_BASIC", description: "Fecha a janela TOOLS." },
+      { num: 6, label: "SELECT", action: "enter_selected", description: "Abre a ferramenta selecionada." }
+    ],
+    items: [
+      { id: "dlt_in", label: "INPUT CONFIG (Configurar Tipo de Pad no WT-10)", row: 1, col: 1, targetScreen: "DRUMLINK_INPUT_CONFIG", explanation: "Coluna 1: Abre a tela INPUT CONFIGURATION do WT-10." },
+      { id: "dlt_cal", label: "CALIBRATE DRUM / BOW / PEDAL", row: 1, col: 2, targetScreen: "DRUMLINK_BASIC", explanation: "Coluna 2 (1 seta à direita): Executa a calibração de zona/pedal do pad sem fio." },
+      { id: "dlt_unp", label: "UNPAIR (Desparear Pad Sem Fio)", row: 1, col: 3, targetScreen: "DRUMLINK_HUB", explanation: "Coluna 3 (2 setas à direita): Despareia o pad sem fio selecionado." }
+    ]
+  },
+
+  DRUMLINK_INPUT_CONFIG: {
+    id: "DRUMLINK_INPUT_CONFIG",
+    title: "DrumLink - INPUT CONFIGURATION (Configuração das Entradas do WT-10)",
+    manualSectionId: "system-trigger-drumlink-dwe",
+    category: "MENU > SYSTEM > TRIGGER > ADVANCED > DrumLink",
+    accessPath: "Em DrumLink (WT-10), pressione [F6] (INPUT CONFIG) ou via [F5] TOOLS > INPUT CONFIG (Manual p. 166–167).",
+    visualDescription:
+      "Configura os conectores do adaptador sem fio WT-10: " +
+      "Linha 1: Input Mode ('Dual Input': 2 pads independentes; '3-Way Cymbal': 1 prato de 3 zonas CY-12R/C..CY-16R-T; 'Hi-Hat': chimbal VH-10 + FD). " +
+      "Linha 2: Pad 1 Trig Type (modelo do pad conectado ao cabo 1). " +
+      "Linha 3: Pad 2 Trig Type (modelo do pad conectado ao cabo 2). " +
+      "Linha 4: 2 Zone Mode (Rimshot / Cross Stick). " +
+      "Pressione [F6] (CLOSE) ou [EXIT] e bata no pad (tecla B) para gravar no WT-10!",
+    layoutType: "list",
+    fButtons: [
+      { num: 1, label: "---", action: "none", description: "" },
+      { num: 2, label: "---", action: "none", description: "" },
+      { num: 3, label: "---", action: "none", description: "" },
+      { num: 4, label: "---", action: "none", description: "" },
+      { num: 5, label: "---", action: "none", description: "" },
+      { num: 6, label: "CLOSE", action: "goto", target: "DRUMLINK_BASIC", description: "Fecha a janela INPUT CONFIGURATION e retorna a DrumLink - BASIC." }
+    ],
+    items: [
+      { id: "dlic_mode", label: "1. Input Mode (Modo de Entrada do WT-10)", paramKey: "dlWt10InputMode", type: "enum", options: ["Dual Input (Pad 1 + Pad 2)", "3-Way Cymbal (Bow/Bell/Edge)", "Hi-Hat (Cymbal + Pedal)"], defaultVal: "Dual Input (Pad 1 + Pad 2)", row: 1, col: 1, explanation: "Define como os dois cabos do WT-10 operam." },
+      { id: "dlic_p1", label: "2. Pad 1 Trig Type", paramKey: "dlWt10Pad1Type", type: "enum", options: ["PDX-8", "PDX-100", "PD-12P", "PD-10H", "PD-8H", "KD-10", "CY-12C-T", "CY-14R-T", "CY-16R-T", "VH-10", "RT-30HR", "RT-30K", "BT-1"], defaultVal: "PDX-8", row: 2, col: 1, explanation: "Modelo do pad conectado ao conector 1 do WT-10 (1 seta para baixo)." },
+      { id: "dlic_p2", label: "3. Pad 2 Trig Type", paramKey: "dlWt10Pad2Type", type: "enum", options: ["OFF", "PDX-8", "PDX-100", "PD-8H", "KD-10", "CY-12C-T", "CY-8", "BT-1", "FD-9 Pedal"], defaultVal: "CY-12C-T", row: 3, col: 1, explanation: "Modelo do pad conectado ao conector 2 do WT-10 (2 setas para baixo)." },
+      { id: "dlic_2z", label: "4. 2 Zone Mode", paramKey: "dlWt10TwoZoneMode", type: "enum", options: ["Rimshot", "Cross Stick"], defaultVal: "Rimshot", row: 4, col: 1, explanation: "Comportamento do aro em pads de 2 zonas no WT-10 (3 setas para baixo)." }
+    ]
+  },
+
+  SYSTEM_MIDI_PROG_CHG: {
+    id: "SYSTEM_MIDI_PROG_CHG",
+    title: "SYSTEM MIDI - PROG CHG (Tabela de Program Change por Kit)",
+    manualSectionId: "system-wifi-bt-audio-midi",
+    category: "MENU > SYSTEM > MIDI",
+    accessPath: "Em MENU > SYSTEM > MIDI, pressione [F4] (PROG CHG) (Manual p. 212).",
+    visualDescription:
+      "Tabela que relaciona cada Drum Kit (001 a 200) com um número de Banco (MSB/LSB) e Program Change (Bank0 - PC0 a Bank1 - PC127, ou OFF). " +
+      "Use Seta Cima [▲] / Seta Baixo [▼] para escolher o Kit e gire o Disco [+]/[-] para alterar o Program Change atribuído. Pressione [F6] (DEFAULT) para restaurar a correspondência 1:1 de fábrica.",
+    layoutType: "list",
+    fButtons: [
+      { num: 1, label: "BASIC", action: "goto", target: "SYSTEM_MIDI_BASIC", description: "Volta para a aba BASIC." },
+      { num: 2, label: "CONTROL", action: "goto", target: "SYSTEM_MIDI_CONTROL", description: "Muda para a aba CONTROL." },
+      { num: 3, label: "SYNC", action: "goto", target: "SYSTEM_MIDI_SYNC", description: "Muda para a aba SYNC." },
+      { num: 4, label: "PROG CHG", action: "goto", target: "SYSTEM_MIDI_PROG_CHG", description: "Aba atual: PROG CHG." },
+      { num: 5, label: "---", action: "none", description: "" },
+      { num: 6, label: "DEFAULT", action: "reset_section", description: "Restaura a tabela de Program Change para os valores de fábrica." }
+    ],
+    items: [
+      { id: "mpc_k1", label: "Kit 001 (V-Drums Kit) - Program Change", paramKey: "progChg_001", type: "enum", options: ["OFF", "Bank0 - PC0", "Bank0 - PC1", "Bank0 - PC2", "Bank0 - PC3", "Bank1 - PC0"], defaultVal: "Bank0 - PC0", row: 1, col: 1, explanation: "Program Change associado ao Kit 001 (padrão: Bank0 - PC0)." },
+      { id: "mpc_k2", label: "Kit 002 (Studio Maple) - Program Change", paramKey: "progChg_002", type: "enum", options: ["OFF", "Bank0 - PC0", "Bank0 - PC1", "Bank0 - PC2", "Bank0 - PC3"], defaultVal: "Bank0 - PC1", row: 2, col: 1, explanation: "Program Change associado ao Kit 002 (padrão: Bank0 - PC1 — 1 seta para baixo)." },
+      { id: "mpc_k3", label: "Kit 003 (birch) - Program Change", paramKey: "progChg_003", type: "enum", options: ["OFF", "Bank0 - PC0", "Bank0 - PC1", "Bank0 - PC2", "Bank0 - PC3"], defaultVal: "Bank0 - PC2", row: 3, col: 1, explanation: "Program Change associado ao Kit 003 (padrão: Bank0 - PC2 — 2 setas para baixo)." }
+    ]
+  },
+
+  OUTPUT_MONITOR: {
+    id: "OUTPUT_MONITOR",
+    title: "OUTPUT - MONITOR (Medidores de Nível de Saída MASTER e PHONES)",
+    manualSectionId: "system-output-usbaudio-option-info-reset",
+    category: "MENU > SYSTEM > OUTPUT",
+    accessPath: "Em MENU > SYSTEM > OUTPUT, pressione [F5] (MONITOR) (Manual p. 215).",
+    visualDescription:
+      "Exibe em tela grande os medidores estéreo de nível de saída MASTER (L/R) e PHONES (L/R) (-42 a 0 dB). Pressione a tecla B para tocar o pad e observar os medidores.",
+    layoutType: "list",
+    fButtons: [
+      { num: 1, label: "PAD MASTER", action: "goto", target: "OUTPUT_PAD_MASTER", description: "Volta para PAD MASTER." },
+      { num: 2, label: "OTHER MST", action: "goto", target: "OUTPUT_OTHER_MST", description: "Muda para OTHER MST." },
+      { num: 3, label: "KNOB TYPE", action: "goto", target: "OUTPUT_KNOB_TYPE", description: "Muda para KNOB TYPE." },
+      { num: 4, label: "LOW CUT", action: "goto", target: "OUTPUT_LOW_CUT", description: "Muda para LOW CUT." },
+      { num: 5, label: "MONITOR", action: "goto", target: "OUTPUT_MONITOR", description: "Aba atual: MONITOR." },
+      { num: 6, label: "GLOBAL TONE", action: "goto", target: "GLOBAL_TONE_SETUP", description: "Abre GLOBAL TONE." }
+    ],
+    items: [
+      { id: "omon_mst", label: "Medidor MASTER OUT (L / R)", type: "readonly", defaultVal: "MASTER L: -6.0 dB | MASTER R: -6.0 dB (Sem clip)", row: 1, col: 1, explanation: "Nível atual nas saídas MASTER OUT L/R." },
+      { id: "omon_phn", label: "Medidor PHONES OUT (L / R)", type: "readonly", defaultVal: "PHONES L: -6.0 dB | PHONES R: -6.0 dB (Sem clip)", row: 2, col: 1, explanation: "Nível atual na saída de fones PHONES (1 seta para baixo)." }
+    ]
+  },
+
+  DIGITAL_PAD_RECOVERY: {
+    id: "DIGITAL_PAD_RECOVERY",
+    title: "SYSTEM INFO - DIGITAL PAD RECOVERY (Assistente de Recuperação STEP 1 a 3)",
+    manualSectionId: "system-output-usbaudio-option-info-reset",
+    category: "MENU > SYSTEM > INFO > DIGITAL",
+    accessPath: "Em MENU > SYSTEM > INFO > [F4] (DIGITAL), mantenha [SHIFT] pressionado e pressione [F6] (RECOVER) (Manual p. 153–155).",
+    visualDescription:
+      "Assistente em 3 passos para recuperar um Pad Digital cuja atualização foi interrompida: " +
+      "STEP 1: 'Disconnect all digital pads from the unit, then press [NEXT].' " +
+      "STEP 2: 'Connect the digital pad you want to recover to the DIGITAL TRIGGER IN 1 port while holding down the button on the digital pad, then press [NEXT].' " +
+      "STEP 3: Selecione o modelo em 'Target Digital Pad' (PD-14DSX, PD-140DS, CY-18DR, VH-14D) e pressione [F6] (RECOVER). " +
+      "No rodapé: [F1] EXIT / BACK, [F6] NEXT / RECOVER.",
+    layoutType: "list",
+    fButtons: [
+      { num: 1, label: "EXIT", action: "goto", target: "SYSTEM_INFO_DIGITAL", description: "Sai do assistente Digital Pad Recovery e volta para SYSTEM INFO - DIGITAL." },
+      { num: 2, label: "---", action: "none", description: "" },
+      { num: 3, label: "---", action: "none", description: "" },
+      { num: 4, label: "---", action: "none", description: "" },
+      { num: 5, label: "---", action: "none", description: "" },
+      { num: 6, label: "NEXT / RECOVER", action: "confirm_action", confirmMsg: "Digital Pad Recovery concluído com sucesso! Firmware restaurado (Status: OK).", description: "Avança pelos passos STEP 1 -> STEP 2 -> STEP 3 e executa a recuperação do pad digital." }
+    ],
+    items: [
+      { id: "dpr_step", label: "1. Passo Atual do Assistente (STEP 1 a 3)", paramKey: "digRecoveryStep", type: "enum", options: ["STEP 1: Desconecte todos os pads digitais e pressione [NEXT]", "STEP 2: Conecte na porta 1 segurando o botão do pad e pressione [NEXT]", "STEP 3: Escolha o Target Digital Pad e pressione [RECOVER]"], defaultVal: "STEP 1: Desconecte todos os pads digitais e pressione [NEXT]", row: 1, col: 1, explanation: "Passo do assistente DIGITAL PAD RECOVERY." },
+      { id: "dpr_target", label: "2. Target Digital Pad (STEP 3)", paramKey: "digRecoveryTarget", type: "enum", options: ["PD-14DSX", "PD-140DS", "CY-18DR", "VH-14D"], defaultVal: "PD-14DSX", row: 2, col: 1, explanation: "Modelo do pad digital a ser recuperado no STEP 3 (1 seta para baixo)." }
+    ]
+  },
+
+  FACTORY_RESET_LICENSE: {
+    id: "FACTORY_RESET_LICENSE",
+    title: "FACTORY RESET WITH USER LICENSE (Restaurar Fábrica e Remover Licença Roland Cloud)",
+    manualSectionId: "system-output-usbaudio-option-info-reset",
+    category: "MENU > SYSTEM > FACTORY RESET",
+    accessPath: "Em MENU > SYSTEM > FACTORY RESET, pressione [F1] (REMOVE LIC) (Manual p. 224–225).",
+    visualDescription:
+      "Exibe 'Clear all data and load factory preset data' com 4 itens fixos marcados (✔): " +
+      "1. Reset with User Samples, 2. Reset with Instrument Expansion Slots and Racks, 3. Reset with User License, 4. Reset with all coach scores. " +
+      "No rodapé: [F1] EXIT (volta para FACTORY RESET normal), [F6] EXECUTE (abre a confirmação EXIT / OK).",
+    layoutType: "list",
+    fButtons: [
+      { num: 1, label: "EXIT", action: "goto", target: "FACTORY_RESET", description: "Volta para a tela FACTORY RESET padrão." },
+      { num: 2, label: "---", action: "none", description: "" },
+      { num: 3, label: "---", action: "none", description: "" },
+      { num: 4, label: "---", action: "none", description: "" },
+      { num: 5, label: "---", action: "none", description: "" },
+      { num: 6, label: "EXECUTE", action: "factory_reset_exec", description: "Executa a restauração completa incluindo remoção da licença de usuário (pede confirmação EXIT / OK)." }
+    ],
+    items: [
+      { id: "frl_info", label: "Itens Incluídos na Restauração Completa", type: "readonly", defaultVal: "[✔] User Samples | [✔] Expansion Slots & Racks | [✔] User License | [✔] All Coach Scores", row: 1, col: 1, explanation: "Pressione [F6] (EXECUTE) para limpar toda a memória interna e remover a licença vinculada, ou [F1] (EXIT) para voltar." }
+    ]
+  },
+
+  EXPANSION_LOAD_TO_KIT: {
+    id: "EXPANSION_LOAD_TO_KIT",
+    title: "LOAD TO KIT (Importar Drum Kits da Expansão para Kits do Usuário)",
+    manualSectionId: "expansion-user-sample",
+    category: "Expansões e User Samples",
+    accessPath: "Em [EXPANSION] > [F1] (SLOT), selecione um Slot (1–6) e pressione [F4] (LOAD TO KIT) (Manual p. 31–32).",
+    visualDescription:
+      "Janela sobreposta que lista os Drum Kits contidos na Expansão do Slot selecionado (ex: EXV001: 1 UK Wet Booth, 2 UK Wet Studio, 3 LoFi Overdrive, 4 Tight Studio, 5 Big Room UK) e o 'Destination User Kit' (001 a 200). " +
+      "No rodapé: [F3] LOAD ALL (carrega todos os kits da expansão em sequência), [F4] CLOSE (fecha a janela), [F5] PREVIEW (permite tocar nos pads ouvindo o kit da expansão antes de carregar), [F6] LOAD (carrega o kit selecionado no Destination Kit).",
+    layoutType: "list",
+    fButtons: [
+      { num: 1, label: "---", action: "none", description: "" },
+      { num: 2, label: "---", action: "none", description: "" },
+      { num: 3, label: "LOAD ALL", action: "confirm_action", confirmMsg: "Todos os Drum Kits da expansão foram carregados nos Kits do Usuário!", description: "Carrega todos os kits da expansão em sequência a partir do Destination Kit." },
+      { num: 4, label: "CLOSE", action: "goto", target: "EXPANSION_SLOT", description: "Fecha a janela LOAD TO KIT e volta para EXPANSION - SLOT." },
+      { num: 5, label: "PREVIEW", action: "announce", message: "Modo PREVIEW ativo: bata nos pads (tecla B) para ouvir o kit da expansão antes de importar!", description: "Ativa/desativa a audição prévia do kit da expansão." },
+      { num: 6, label: "LOAD", action: "confirm_action", confirmMsg: "Kit da expansão carregado com sucesso no Drum Kit do usuário!", description: "Carrega o kit da expansão selecionado no Destination Kit (pede confirmação OK)." }
+    ],
+    items: [
+      { id: "eltk_src", label: "1. Expansion Kit (Kit da Expansão)", paramKey: "expLoadKitSel", type: "enum", options: ["1: UK Wet Booth (EXV001)", "2: UK Wet Studio (EXV001)", "3: LoFi Overdrive (EXV001)", "4: Tight Studio (EXV001)", "5: Big Room UK (EXV001)"], defaultVal: "1: UK Wet Booth (EXV001)", row: 1, col: 1, explanation: "Escolha qual kit da expansão deseja carregar (ou pressione [F3] LOAD ALL para carregar todos)." },
+      { id: "eltk_dst", label: "2. Destination User Kit (001–200)", paramKey: "expLoadDestKit", type: "kit_selector", min: 1, max: 200, defaultVal: 46, row: 2, col: 1, explanation: "Escolha em qual Drum Kit do usuário (001 a 200) o kit da expansão será gravado (1 seta para baixo)." }
+    ]
+  },
+
+  EXPANSION_USAGE_WINDOW: {
+    id: "EXPANSION_USAGE_WINDOW",
+    title: "KITS USING EACH EXPANSION (Lista de Kits que Usam Cada Slot)",
+    manualSectionId: "expansion-user-sample",
+    category: "Expansões e User Samples",
+    accessPath: "Em [EXPANSION] > [F1] (SLOT), pressione [F6] (EXP USAGE) (Manual p. 117).",
+    visualDescription:
+      "Janela sobreposta dividida em 2 colunas: Coluna 1 (Esquerda) = Slot 1 a Slot 6; Coluna 2 (Direita) = Drum Kits (001–200) que usam instrumentos daquele Slot. " +
+      "Pressione [F5] (SELECT) para ir diretamente ao kit selecionado ou [F6] (CLOSE) para fechar.",
+    layoutType: "grid",
+    fButtons: [
+      { num: 1, label: "---", action: "none", description: "" },
+      { num: 2, label: "---", action: "none", description: "" },
+      { num: 3, label: "---", action: "none", description: "" },
+      { num: 4, label: "---", action: "none", description: "" },
+      { num: 5, label: "SELECT", action: "goto", target: "KIT", description: "Seleciona o Drum Kit destacado e abre a tela KIT." },
+      { num: 6, label: "CLOSE", action: "goto", target: "EXPANSION_SLOT", description: "Fecha a janela KITS USING EACH EXPANSION." }
+    ],
+    items: [
+      { id: "euw_slot", label: "Slot Selecionado (Coluna 1)", paramKey: "expUsageSlot", type: "enum", options: ["Slot 1: EXV001 Wood Room Studio UK 1", "Slot 2: EXV002 Electronic&Percussion 1", "Slot 3: EXV003 The Brush 1", "Slot 4: EMPTY", "Slot 5: EMPTY", "Slot 6: EMPTY"], defaultVal: "Slot 1: EXV001 Wood Room Studio UK 1", row: 1, col: 1, explanation: "Coluna 1: Escolha o Slot (1 a 6) para ver quais kits o utilizam." },
+      { id: "euw_kit", label: "Kits que Utilizam este Slot (Coluna 2)", paramKey: "expUsageKit", type: "kit_selector", min: 1, max: 200, defaultVal: 46, row: 1, col: 2, explanation: "Coluna 2 (1 seta à direita): Lista de Drum Kits que usam o Slot selecionado. Pressione [F5] (SELECT) para ir ao kit." }
+    ]
+  },
+
+  EXPANSION_RACK_SORT: {
+    id: "EXPANSION_RACK_SORT",
+    title: "RACK SORT RULE (Regra de Ordenação do Rack)",
+    manualSectionId: "expansion-user-sample",
+    category: "Expansões e User Samples",
+    accessPath: "Em [EXPANSION] > [F2] (RACK), pressione [F3] (SORT BY...) (Manual p. 114).",
+    visualDescription:
+      "Janela sobreposta para escolher a ordem em que os pacotes aparecem no RACK: 'Sort by [Default]', '[^ Expansion ID]', '[v Expansion ID]', '[^ Purchase Type]', '[v Purchase Type]'. Pressione [F6] (SELECT) ou [ENTER].",
+    layoutType: "list",
+    fButtons: [
+      { num: 1, label: "---", action: "none", description: "" },
+      { num: 2, label: "---", action: "none", description: "" },
+      { num: 3, label: "CLOSE", action: "goto", target: "EXPANSION_RACK", description: "Fecha a janela de ordenação." },
+      { num: 4, label: "---", action: "none", description: "" },
+      { num: 5, label: "---", action: "none", description: "" },
+      { num: 6, label: "SELECT", action: "goto", target: "EXPANSION_RACK", description: "Aplica a regra de ordenação selecionada e retorna ao RACK." }
+    ],
+    items: [
+      { id: "ers_rule", label: "Rack Sort Rule (Ordenar Por)", paramKey: "rackSortRule", type: "enum", options: ["Sort by [Default]", "Sort by [^ Expansion ID]", "Sort by [v Expansion ID]", "Sort by [^ Purchase Type]", "Sort by [v Purchase Type]"], defaultVal: "Sort by [Default]", row: 1, col: 1, explanation: "Escolha a ordem de classificação do Rack e pressione [F6] (SELECT) ou [ENTER]." }
+    ]
+  },
+
+  EXPANSION_LOAD_TO_SLOT: {
+    id: "EXPANSION_LOAD_TO_SLOT",
+    title: "LOAD TO SLOT (Carregar Expansão do Rack em um Slot 1–6)",
+    manualSectionId: "expansion-user-sample",
+    category: "Expansões e User Samples",
+    accessPath: "Em [EXPANSION] > [F2] (RACK), selecione uma expansão e pressione [F4] (LOAD TO SLOT) (Manual p. 115–116).",
+    visualDescription:
+      "Janela sobreposta para escolher em qual dos 6 Slots ativos (Slot 1 a Slot 6) a expansão selecionada no Rack será carregada. Pressione [F4] (CLOSE) para cancelar ou [F6] (LOAD) para confirmar.",
+    layoutType: "list",
+    fButtons: [
+      { num: 1, label: "---", action: "none", description: "" },
+      { num: 2, label: "---", action: "none", description: "" },
+      { num: 3, label: "---", action: "none", description: "" },
+      { num: 4, label: "CLOSE", action: "goto", target: "EXPANSION_RACK", description: "Cancela e retorna ao RACK." },
+      { num: 5, label: "---", action: "none", description: "" },
+      { num: 6, label: "LOAD", action: "confirm_action", confirmMsg: "Expansão carregada do Rack para o Slot selecionado com sucesso!", description: "Carrega a expansão no Slot escolhido (pede confirmação OK)." }
+    ],
+    items: [
+      { id: "elts_slot", label: "Target Slot (Slot 1 a Slot 6)", paramKey: "rackLoadTargetSlot", type: "enum", options: ["Slot 1 (EXV001 Wood Room Studio UK 1)", "Slot 2 (EXV002 Electronic&Percussion 1)", "Slot 3 (EXV003 The Brush 1)", "Slot 4 (EMPTY)", "Slot 5 (EMPTY)", "Slot 6 (EMPTY)"], defaultVal: "Slot 4 (EMPTY)", row: 1, col: 1, explanation: "Escolha o Slot de destino (1 a 6) com [▲]/[▼] ou Disco e pressione [F6] (LOAD)." }
     ]
   }
 });
